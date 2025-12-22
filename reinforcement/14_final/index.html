@@ -1,0 +1,1237 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Structured lecture notes on Reinforcement Learning.">
+      
+      
+        <meta name="author" content="Salman Khan">
+      
+      
+        <link rel="canonical" href="https://salk91.github.io/reinforcement_learning/reinforcement/14_final/">
+      
+      
+        <link rel="prev" href="../13_montecarlo/">
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.20">
+    
+    
+      
+        <title>14. Summary and Overview - Reinforcement Learning Lecture Notes</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.e53b48f4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather:300,300i,400,400i,700,700i%7CFira+Code:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Merriweather";--md-code-font:"Fira Code"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/print-site.css">
+    
+      <link rel="stylesheet" href="../../css/print-site-material.css">
+    
+      <link rel="stylesheet" href="../../styles/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-14-c" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Reinforcement Learning Lecture Notes" class="md-header__button md-logo" aria-label="Reinforcement Learning Lecture Notes" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Reinforcement Learning Lecture Notes
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              14. Summary and Overview
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="cyan" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="cyan" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m3.55 19.09 1.41 1.41 1.8-1.79-1.42-1.42M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6c0-3.32-2.69-6-6-6m8 7h3v-2h-3m-2.76 7.71 1.8 1.79 1.41-1.41-1.79-1.8M20.45 5l-1.41-1.4-1.8 1.79 1.42 1.42M13 1h-2v3h2M6.76 5.39 4.96 3.6 3.55 5l1.79 1.81zM1 13h3v-2H1m12 9h-2v3h2"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/SalK91/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../1_intro/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reinforcement Learning
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../print_page/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Print/PDF
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Reinforcement Learning Lecture Notes" class="md-nav__button md-logo" aria-label="Reinforcement Learning Lecture Notes" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    Reinforcement Learning Lecture Notes
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/SalK91/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Reinforcement Learning
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Reinforcement Learning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1_intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    1. Introduction to Reinforcement Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2_mdp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    2. MDPs &amp; Dynamic Programming
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3_modelfree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    3. Model-Free Prediction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../4_model_free_control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    4. Model-Free Control
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../5_policy_gradient/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    5. Policy Gradient Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../6_pg2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    6. Policy Gradient Variance Reduction and Actor-Critic
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../7_gae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    7. Advances in Policy Optimization – GAE, TRPO, and PPO
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../8_imitation_learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    8. Imitation Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../9_rlhf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    9. RLHF
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10_offline_rl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    10. Offline Reinforcement Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11_fast_rl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    11. Data-Efficient Reinforcement Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12_fast_mdps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    12. Fast Reinforcement Learning in MDPs and Generalization
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13_montecarlo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    13. Monte Carlo Tree Search and Planning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    14. Summary and Overview
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    14. Summary and Overview
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#recap-from-bandits-to-deep-reinforcement-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recap: From Bandits to Deep Reinforcement Learning
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-algorithmic-ideas-in-exploration-and-planning" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Algorithmic Ideas in Exploration and Planning
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exploration-paradigms-optimism-vs-probability-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exploration Paradigms: Optimism vs. Probability Matching
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#from-theory-to-practice-real-world-applications-and-achievements" class="md-nav__link">
+    <span class="md-ellipsis">
+      From Theory to Practice: Real-World Applications and Achievements
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#final-takeaways" class="md-nav__link">
+    <span class="md-ellipsis">
+      Final Takeaways
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../print_page/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Print/PDF
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#recap-from-bandits-to-deep-reinforcement-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recap: From Bandits to Deep Reinforcement Learning
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-algorithmic-ideas-in-exploration-and-planning" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Algorithmic Ideas in Exploration and Planning
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exploration-paradigms-optimism-vs-probability-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exploration Paradigms: Optimism vs. Probability Matching
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#from-theory-to-practice-real-world-applications-and-achievements" class="md-nav__link">
+    <span class="md-ellipsis">
+      From Theory to Practice: Real-World Applications and Achievements
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#final-takeaways" class="md-nav__link">
+    <span class="md-ellipsis">
+      Final Takeaways
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/SalK91/edit/main/docs/reinforcement/14_final.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/SalK91/raw/main/docs/reinforcement/14_final.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"></path></svg>
+    </a>
+  
+
+
+<h1 id="chapter-14-c">Chapter 14: c<a class="headerlink" href="#chapter-14-c" title="Permanent link">¶</a></h1>
+<p>In this final chapter, we recap the journey of reinforcement learning (RL) from its foundational ideas in multi-armed bandits through to the cutting-edge of deep RL. Along the way we will revisit key algorithmic concepts – including Upper Confidence Bounds (UCB), Thompson Sampling, Model-Based Interval Estimation with Exploration Bonus (MBIE-EB), and Monte Carlo Tree Search (MCTS) – and highlight how different approaches to exploration (optimism vs. probability matching) have shaped the field. We will also emphasize the theoretical foundations of RL (regret minimization, PAC guarantees, Bayesian methods) and illustrate how these principles connect to real-world successes like AlphaTensor and ChatGPT. Throughout, the aim is to provide a high-level summary and synthesis, reinforcing the insights gained across previous chapters.</p>
+<h2 id="recap-from-bandits-to-deep-reinforcement-learning">Recap: From Bandits to Deep Reinforcement Learning<a class="headerlink" href="#recap-from-bandits-to-deep-reinforcement-learning" title="Permanent link">¶</a></h2>
+<p>Reinforcement learning can be defined as learning through experience (data) to make good decisions under uncertainty. In an RL problem, an agent interacts with an environment, observes states <span class="arithmatex">\(s\)</span>, takes actions <span class="arithmatex">\(a\)</span>, and receives rewards <span class="arithmatex">\(r\)</span>, with the goal of learning a policy <span class="arithmatex">\(\pi(a|s)\)</span> that maximizes future expected reward. Several core features distinguish RL from other learning paradigms:</p>
+<ul>
+<li>
+<p>Optimization of Long-Term Reward: The agent seeks to maximize cumulative reward, accounting for delayed consequences of actions.</p>
+</li>
+<li>
+<p>Trial-and-Error Learning: The agent learns by exploring different actions and observing outcomes, balancing exploration vs. exploitation.</p>
+</li>
+<li>
+<p>Generalization: The agent must generalize from limited experience to new situations (often via function approximation in large state spaces).</p>
+</li>
+<li>
+<p>Data Distribution Shift: Unlike supervised learning, the agent’s own actions affect the data it collects and the states it visits, creating a feedback loop in the learning process.</p>
+</li>
+</ul>
+<p>We began our journey with multi-armed bandits, the simplest RL setting. In a bandit problem there is a single state (no state transitions); each action (arm) yields a reward drawn from an unknown distribution, and the goal is to maximize reward over repeated plays. A bandit is essentially a stateless decision problem – the next situation does not depend on the previous action. This contrasts with the general Markov Decision Process (MDP) setting, where each action can change the state and influence future rewards and decisions. Bandits capture the essence of exploration-exploitation without the complication of state transitions, making them a perfect starting point.</p>
+<p>From bandits we progressed to MDPs and multi-step RL problems, which introduce state dynamics and temporal credit assignment. We studied model-free methods (like Q-learning and policy gradient) and model-based methods (like planning with known models or learned models), as well as combinations thereof. As tasks grew more complex, we incorporated function approximation (e.g. using deep neural networks) to handle large or continuous state spaces. This led us into the realm of deep reinforcement learning, where algorithms like DQN and policy optimization methods (PPO, etc.) leverage deep networks as powerful function approximators. While function approximation enables scaling to complex domains, it also introduced new challenges such as stability of learning (e.g. off-policy learning instability, need for techniques like experience replay, target networks, or trust region methods). In parallel, we discussed how off-policy learning and exploration in large domains remain critical challenges, and saw approaches to address these (from clipped policy optimization (PPO) for stability, to imitation learning like DAGGER to incorporate expert knowledge, to pessimistic value adjustments for safer offline learning).</p>
+<p>Throughout this journey, a unifying theme has been the exploration-exploitation dilemma and the development of algorithms to efficiently learn optimal strategies. In the following sections, we summarize some key algorithmic ideas for exploration and discuss how they exemplify different strategies to address this core challenge.</p>
+<h2 id="key-algorithmic-ideas-in-exploration-and-planning">Key Algorithmic Ideas in Exploration and Planning<a class="headerlink" href="#key-algorithmic-ideas-in-exploration-and-planning" title="Permanent link">¶</a></h2>
+<h3 id="optimistic-exploration-upper-confidence-bounds-ucb">Optimistic Exploration: Upper Confidence Bounds (UCB)<a class="headerlink" href="#optimistic-exploration-upper-confidence-bounds-ucb" title="Permanent link">¶</a></h3>
+<p>A foundational idea for efficient exploration is optimism in the face of uncertainty. The principle is simple: assume the best about untried actions so that the agent is driven to explore them. The Upper Confidence Bound (UCB) algorithm is a classic realization of this idea for multi-armed bandits. UCB maintains an estimate <span class="arithmatex">\(\hat{Q}_t(a)\)</span> for the mean reward of each arm <span class="arithmatex">\(a\)</span> and an uncertainty interval (confidence bound) around that estimate. At each time <span class="arithmatex">\(t\)</span>, it selects the action maximizing an upper-confidence estimate of the reward:</p>
+<div class="arithmatex">\[
+a_t = \arg\max_{a \in A} \left[ \hat{Q}_t(a) + c \frac{\ln t}{N_t(a)} \right],
+\]</div>
+<p>where <span class="arithmatex">\(N_t(a)\)</span> is the number of times action <span class="arithmatex">\(a\)</span> has been taken up to time <span class="arithmatex">\(t\)</span>, and <span class="arithmatex">\(c\)</span> is a constant (e.g. <span class="arithmatex">\(c=\sqrt{2}\)</span> for the UCB1 algorithm).</p>
+<p>This selection rule balances exploitation (the <span class="arithmatex">\(\hat{Q}_t(a)\)</span> term) with exploration (the bonus term that is large for rarely-selected actions). Intuitively, UCB explores actions with high potential payoffs or high uncertainty. This approach yields strong theoretical guarantees: for instance, UCB1 achieves sublinear regret on the order of <span class="arithmatex">\(O(\ln T)\)</span> for bandits, meaning the gap between the accumulated reward of UCB and that of an oracle choosing the best arm at each play grows only logarithmically with time. Optimistic algorithms like UCB are attractive because they are simple and provide worst-case performance guarantees (they will eventually try everything enough to near-certainty). Variants of UCB and optimism-driven exploration have been extended beyond bandits, for example to MDPs via exploration bonus terms.</p>
+<h3 id="probability-matching-thompson-sampling">Probability Matching: Thompson Sampling<a class="headerlink" href="#probability-matching-thompson-sampling" title="Permanent link">¶</a></h3>
+<p>An alternative approach to exploration comes from a Bayesian perspective. Instead of confidence bounds, the agent maintains a posterior distribution over the reward parameters of each action and samples an action according to the probability it is optimal. This strategy is known as Thompson Sampling (or probability matching). In the multi-armed bandit setting, Thompson Sampling can be implemented by assuming a prior for each arm’s mean reward, updating it with observed rewards, and then at each step sampling a value <span class="arithmatex">\(\tilde{\theta}_a\)</span> from the posterior of each arm’s mean. The agent then plays the arm with the highest sampled value. By randomly exploring according to its uncertainty, Thompson Sampling naturally balances exploration and exploitation in a Bayesian-optimal way for certain problems.</p>
+<p>For example, if rewards are Bernoulli and a Beta prior is used for each arm’s success probability, Thompson Sampling draws a sample from each arm’s Beta posterior and picks the arm with the largest sample. This probability matching tends to allocate more trials to arms that are likely to be best, yet still occasionally tries others proportional to uncertainty. Empirically, Thompson Sampling often performs exceptionally well, sometimes even outperforming UCB in practice, and it has a Bayesian regret that is optimal in certain settings. The caveat is that analyzing Thompson Sampling’s worst-case performance is more complex; however, theoretical advances have shown Thompson Sampling achieves <span class="arithmatex">\(O(\ln T)\)</span> regret for many bandit problems as well. A key appeal of Thompson Sampling is its flexibility – it can be applied to complex problems if one can sample from a posterior (or an approximate posterior) of the model’s parameters. In modern RL, variants of Thompson Sampling inspire approaches like Bootstrapped DQN (which maintains an ensemble of value networks to generate randomized Q-value estimates for exploration).</p>
+<h3 id="pac-mdp-algorithms-and-exploration-bonuses-mbie-eb">PAC-MDP Algorithms and Exploration Bonuses (MBIE-EB)<a class="headerlink" href="#pac-mdp-algorithms-and-exploration-bonuses-mbie-eb" title="Permanent link">¶</a></h3>
+<p>In full reinforcement learning problems (MDPs), the exploration challenge becomes more intricate due to state transitions. PAC-MDP algorithms provide a framework for efficient exploration with theoretical guarantees. PAC stands for “Probably Approximately Correct,” meaning these algorithms guarantee that with high probability (<span class="arithmatex">\(1-\delta\)</span>) the agent will behave near-optimally (within <span class="arithmatex">\(\varepsilon\)</span> of the optimal return) after a certain number of time steps that is polynomial in relevant problem parameters. In other words, a PAC-MDP algorithm will make only a finite (polynomial) number of suboptimal decisions before it effectively converges to an <span class="arithmatex">\(\varepsilon\)</span>-optimal policy.</p>
+<p>One representative PAC-MDP approach is Model-Based Interval Estimation with Exploration Bonus (MBIE-EB) by Strehl and Littman (2008). This algorithm uses an optimistic model-based strategy: it learns an estimated MDP (transition probabilities <span class="arithmatex">\(\hat{T}\)</span> and rewards <span class="arithmatex">\(\hat{R}\)</span>) from experience and uses dynamic programming to compute a value function <span class="arithmatex">\(\tilde{Q}(s,a)\)</span> for that estimated model. Critically, MBIE-EB adds an exploration bonus term to reward or value updates for state-action pairs that have been infrequently visited. For example, the update might be:</p>
+<div class="arithmatex">\[
+\tilde{Q}(s,a) \leftarrow \hat{R}(s,a) + \gamma \sum_{s'} \hat{T}(s'|s,a) \max_{a'} \tilde{Q}(s',a') + \beta \frac{1}{\sqrt{N(s,a)}},
+\]</div>
+<p>where <span class="arithmatex">\(N(s,a)\)</span> counts visits to <span class="arithmatex">\((s,a)\)</span> and <span class="arithmatex">\(\beta\)</span> is a bonus scale derived from PAC confidence bounds. The <span class="arithmatex">\(\sqrt{1/N(s,a)}\)</span> bonus term is large for rarely tried state-action pairs, injecting optimism that encourages the agent to explore them. MBIE-EB selects actions according to the optimistic <span class="arithmatex">\(\tilde{Q}\)</span> values (i.e. optimism under uncertainty in an MDP context). Strehl and Littman proved that MBIE-EB is PAC-MDP: with probability <span class="arithmatex">\(1-\delta\)</span>, after a number of steps polynomial in <span class="arithmatex">\(|S|, |A|, 1/\varepsilon, 1/\delta\)</span>, etc., the algorithm’s policy is <span class="arithmatex">\(\varepsilon\)</span>-optimal. PAC algorithms like MBIE-EB (and related methods like R-MAX and UCRL) guarantee efficient exploration in theory, though they can be computationally demanding in practice for large domains. They illustrate how theoretical foundations (confidence intervals and PAC guarantees) directly inform algorithm design.</p>
+<h3 id="monte-carlo-tree-search-mcts-for-planning">Monte Carlo Tree Search (MCTS) for Planning<a class="headerlink" href="#monte-carlo-tree-search-mcts-for-planning" title="Permanent link">¶</a></h3>
+<p>So far we have discussed exploration in the context of learning unknown values or models. Another key idea in the RL toolkit is planning using simulation, particularly via Monte Carlo Tree Search (MCTS). MCTS is a family of simulation-based search algorithms that became famous through their use in game-playing AI (e.g. AlphaGo and AlphaZero). The idea is to build a partial search tree from the current state by simulating many random play-outs (rollouts) and using the results to gradually refine value estimates for states and actions.</p>
+<p>One of the most widely used MCTS algorithms is UCT (Upper Confidence Trees), which blends the UCB idea with tree search. In each simulation (from root state until a terminal state or depth limit), UCT traverses the tree by choosing actions that maximize an upper confidence bound: at a state (tree node) <span class="arithmatex">\(s\)</span>, it selects the action <span class="arithmatex">\(a\)</span> that maximizes</p>
+<div class="arithmatex">\[
+\frac{w_{s,a}}{n_{s,a}} + c \sqrt{\frac{\ln N_s}{n_{s,a}}},
+\]</div>
+<p>where <span class="arithmatex">\(w_{s,a}\)</span> is the total reward accrued from past simulations taking action <span class="arithmatex">\(a\)</span> in state <span class="arithmatex">\(s\)</span>, <span class="arithmatex">\(n_{s,a}\)</span> is the number of simulations that took that action, and <span class="arithmatex">\(N_s = \sum_a n_{s,a}\)</span> is the total simulations from state <span class="arithmatex">\(s\)</span>. This formula is essentially the UCB1 formula extended to tree nodes: the first term is exploitation (the empirical mean reward), and the second is an exploration bonus that is higher for seldom-tried actions. By using this rule at each step of simulation (Selection phase), MCTS efficiently explores the game tree, focusing on promising moves while still trying less-visited moves once in a while. After selection, a random Simulation (rollout) is played out to the end, and the outcome is backpropagated to update <span class="arithmatex">\(w\)</span> and <span class="arithmatex">\(n\)</span> along the path. Repeating thousands or millions of simulations yields increasingly accurate value estimates for the root state and preferred actions.</p>
+<p>MCTS does not learn parameters from data in the traditional sense; rather it is a planning method that can be applied if we have a generative model of the environment (e.g. a simulator or game rules). However, it connects to our theme as another approach to balancing exploration and exploitation via UCB-like algorithms. In practice, MCTS can be combined with learning. Notably, AlphaGo and AlphaZero combined deep neural networks (for state evaluation and policy guidance) with Monte Carlo Tree Search to achieve superhuman performance in Go, chess, and shogi. In those systems, the neural network’s value estimates guide the rollout, and MCTS provides a powerful lookahead search that complements the learned policy. This combination dramatically improves data efficiency – for example, AlphaZero uses MCTS to effectively explore the game space instead of needing an exorbitant amount of self-play games, and the knowledge gained from MCTS is distilled back into the network through training. MCTS exemplifies how models and planning can be leveraged in RL: if a model of the environment is available (or learned), one can simulate experience to aid decision-making without direct real-world trial-and-error for every decision. This is crucial in domains where real experiments are costly or limited.</p>
+<p>Computational vs Data Efficiency: It is worth noting that methods like MCTS (and exhaustive exploration algorithms) tend to be computationally intensive – they trade computation for reduced real-world data needs. We often face a trade-off: algorithms that are very data-efficient (using fewer environment interactions) are often computationally expensive, whereas simpler algorithms that learn quickly in computation might require more data. In some domains (like games or simulated environments), we can afford massive computation, effectively converting computation into simulated “data” for learning. In others (like physical systems or online user interactions), data is scarce or expensive, so sample-efficient algorithms (even if computationally heavy) are preferred. This trade-off has been a recurring consideration as we moved from bandits to deep RL.</p>
+<h2 id="exploration-paradigms-optimism-vs-probability-matching">Exploration Paradigms: Optimism vs. Probability Matching<a class="headerlink" href="#exploration-paradigms-optimism-vs-probability-matching" title="Permanent link">¶</a></h2>
+<p>We have seen two major paradigms for addressing the exploration-exploitation challenge:</p>
+<ul>
+<li>
+<p>Optimism in the face of uncertainty: The agent behaves as if the environment is as rewarding as plausibly possible, given the data. This leads to algorithms like UCB, optimistic initial values, exploration bonuses (e.g. MBIE-EB, optimistic Q-learning), and UCT in MCTS. Optimistic methods systematically encourage trying actions that could be best. They often come with strong theoretical guarantees (UCB’s regret bound, PAC-MDP bounds, etc.) because they ensure sufficient exploration of each alternative. Optimism tends to be a more worst-case (frequentist) approach: it doesn’t assume a prior, just relies on confidence intervals that hold with high probability for any reward distribution.</p>
+</li>
+<li>
+<p>Probability matching (Thompson Sampling and Bayesian methods): The agent maintains a belief (probability distribution) about the environment’s parameters and randomizes its actions according to this belief. Effectively, it samples a hypothesis for the true model and then exploits that hypothesis (e.g., play the best action for that sampled model). Over time, the belief is updated with Bayes’ rule as more data comes in, so the sampling naturally shifts toward optimal actions. This approach is more Bayesian in spirit: it assumes a prior distribution and seeks to maximize performance on average with respect to that prior (i.e., good Bayesian regret). Probability matching can be very effective in practice and can incorporate prior knowledge elegantly. The downside is that providing theoretical guarantees in the worst-case sense can be challenging – the guarantees are often Bayesian (in expectation over the prior) rather than uniform for all environments. Recent theoretical work, however, has shown that even without a perfect prior, Thompson Sampling performs near-optimally in many settings, and there are ways to bound its regret. In terms of implementation complexity, Thompson Sampling may require the ability to sample from posterior distributions, which can be non-trivial in large-scale problems (though approximate methods exist). Optimistic methods, on the other hand, require confidence bound calculations, which for simple tabular cases are straightforward, but for complex function approximation can be difficult (leading to research on exploration bonuses using predictive models or uncertainty estimates).</p>
+</li>
+</ul>
+<p>In summary, optimism vs. probability matching represents two different philosophies for exploration. Optimistic algorithms behave more deterministically (always picking the current optimistic-best option), ensuring systematic coverage of possibilities, while Thompson-style algorithms inject randomized exploration in proportion to uncertainty. Interestingly, human decision-making experiments suggest people may combine elements of both strategies – not purely optimistic nor purely Thompson. Both paradigms have influenced modern RL: for example, exploration bonuses (optimism) are commonly used in deep RL (e.g. with bonus rewards from prediction error or curiosity), and Bayesian RL approaches (like posterior sampling for MDPs) are gaining traction for problems where a reasonable prior is available or an ensemble can approximate uncertainty.</p>
+<h3 id="theoretical-foundations-regret-pac-and-bayesian-optimality">Theoretical Foundations: Regret, PAC, and Bayesian Optimality<a class="headerlink" href="#theoretical-foundations-regret-pac-and-bayesian-optimality" title="Permanent link">¶</a></h3>
+<p>Understanding how well an RL algorithm performs relative to an ideal standard is a major theme in RL theory. We revisited two main frameworks for this: regret analysis and PAC (sample complexity) analysis, along with the Bayesian viewpoint.</p>
+<ul>
+<li>Regret: Regret measures the opportunity loss from not acting optimally at each time step. Formally, in a bandit with optimal expected reward <span class="arithmatex">\(\mu^*\)</span>, the regret after <span class="arithmatex">\(T\)</span> plays is</li>
+</ul>
+<div class="arithmatex">\[
+R(T) = T\mu^* - \sum_{t=1}^T r_t,
+\]</div>
+<p>i.e. the difference between the reward that would be obtained by always executing the optimal arm and the reward actually obtained. Sublinear regret (e.g. <span class="arithmatex">\(R(T) = o(T)\)</span>) implies the algorithm eventually learns the optimal policy (average regret <span class="arithmatex">\(\to 0\)</span> as <span class="arithmatex">\(T\)</span> grows). We saw that <span class="arithmatex">\(\varepsilon\)</span>-greedy exploration can lead to linear regret in the worst case (always pulling some suboptimal arm a constant fraction of the time yields <span class="arithmatex">\(R(T) \sim \Omega(T)\)</span>). In contrast, UCB1 achieves <span class="arithmatex">\(R(T) = O(\ln T)\)</span>, which is asymptotically optimal up to constant factors (matching the Lai &amp; Robbins lower bound for bandits that <span class="arithmatex">\(R(T) \ge \Omega(\ln T)\)</span> for any algorithm). Regret analysis can be extended to MDPs (though it becomes more complex). For example, algorithms like UCRL2 (an optimistic tabular RL algorithm) have regret bounds on the order of <span class="arithmatex">\(\tilde{O}(\sqrt{T})\)</span> in an MDP (reflecting the harder challenge of states) under certain assumptions. Regret is a worst-case, online metric – it asks how well we do even against an adversarially chosen problem (or in the unknown actual environment) without assumptions of a prior, focusing on long-term performance.</p>
+<ul>
+<li>
+<p>PAC (Probably Approximately Correct) guarantees: PAC analysis focuses on sample complexity: how many time steps or episodes are required for the algorithm to achieve near-optimal performance with high probability. A PAC guarantee typically states: for any <span class="arithmatex">\(\varepsilon, \delta\)</span>, there exists <span class="arithmatex">\(N(\varepsilon,\delta)\)</span> (poly in relevant parameters) such that with probability at least <span class="arithmatex">\(1-\delta\)</span>, the algorithm’s policy is <span class="arithmatex">\(\varepsilon\)</span>-optimal after <span class="arithmatex">\(N\)</span> steps (or, equivalently, all but at most <span class="arithmatex">\(N\)</span> of the steps are <span class="arithmatex">\(\varepsilon\)</span>-suboptimal). This is a finite-sample guarantee, giving confidence that the learning will not take too long. We discussed that algorithms like MBIE-EB and R-MAX are PAC-MDP: for a given accuracy <span class="arithmatex">\(\varepsilon\)</span> and confidence <span class="arithmatex">\(1-\delta\)</span>, their sample complexity (number of suboptimal actions) is bounded by a polynomial in <span class="arithmatex">\(|S|, |A|, 1/\varepsilon, 1/\delta, 1/(1-\gamma)\)</span>, etc. PAC analysis is particularly useful when we care about guarantees in a learning phase before near-optimal performance is reached (important in safety-critical or costly domains where we need to know learning will be efficient with high probability). While regret goes to zero only asymptotically, PAC gives an explicit bound on how long it takes to be good. Often, achieving PAC guarantees in large-scale problems requires simplifying assumptions or limited function approximation classes, as general function approximation PAC results are quite difficult.</p>
+</li>
+<li>
+<p>Bayesian approaches and Bayes-optimality: In a Bayesian formulation, we assume a prior distribution over environments (bandit reward distributions or MDP dynamics). We can then consider the Bayes-optimal policy, which is the policy that maximizes expected cumulative reward with respect to this prior. This leads to the concept of Bayesian regret – the expected regret under the prior. A Bayes-optimal algorithm minimizes Bayesian regret and, by definition, will outperform any other algorithm on average if the prior is correct. One famous result in this vein is the Gittins Index for multi-armed bandits, which gives an optimal solution when each arm has independent known priors (casting the problem as a Markov process and solving it via dynamic programming). However, computing Bayes-optimal solutions for general RL (especially with state) is usually intractable – it involves solving a POMDP (partially observable MDP) where the hidden state is the true environment parameters. Thompson Sampling can be interpreted as an approximation to the Bayes-optimal policy that is much easier to implement. It has low Bayesian regret and in some cases can be shown to be asymptotically Bayes-optimal. The Bayesian view is powerful because it allows incorporation of prior knowledge and gives a normative standard (what should we do if we know what we don’t know, in distribution). But its limitation is the computational difficulty and the dependence on having a reasonable prior. In practice, algorithms inspired by Bayesian ideas (like ensemble sampling or posterior sampling for reinforcement learning) try to capture some of the benefit without solving the full Bayes-optimal policy.</p>
+</li>
+</ul>
+<p>These theoretical frameworks complement each other. Regret and PAC analyses give worst-case performance assurances (no matter what the true environment is, within assumptions) and often inspire optimistic algorithms. Bayesian analysis aims for average-case optimality given prior knowledge and often inspires probability matching or adaptive algorithms. As an RL practitioner or researcher, understanding these foundations helps in choosing and designing algorithms appropriate for the problem at hand – whether one prioritizes guaranteed efficiency, practical performance with prior info, or a mix of both.</p>
+<h2 id="from-theory-to-practice-real-world-applications-and-achievements">From Theory to Practice: Real-World Applications and Achievements<a class="headerlink" href="#from-theory-to-practice-real-world-applications-and-achievements" title="Permanent link">¶</a></h2>
+<p>One of the most exciting aspects of the recent decade in RL is seeing theoretical ideas translate into real-world (or at least real-problem) successes. In this section, we connect some of the classic algorithms and concepts to notable applications:</p>
+<ul>
+<li>
+<p>Game Mastery and Planning – AlphaGo, AlphaZero, AlphaTensor: Starting with games, AlphaGo famously combined deep neural networks with MCTS (using UCT) and was trained with reinforcement learning to defeat human Go champions. Its successor AlphaZero took this further by learning from scratch (self-play) for multiple games, using Monte Carlo Tree Search guided by a learned value/policy network. The blend of planning (MCTS) and learning (deep RL) that AlphaZero employs is a direct embodiment of concepts we covered: it uses optimistic simulations (MCTS uses UCB in the tree) and improves data efficiency by leveraging a model (the game simulator) for exploration. The success of AlphaZero demonstrates the power of combining model-based search with model-free function approximation. Recently, these ideas have even extended to domains beyond traditional games. AlphaTensor (DeepMind, 2022) is a system that treated the discovery of new matrix multiplication algorithms as a single-player game, and it applied a variant of AlphaZero’s RL approach to find faster algorithms for matrix multiply. The AlphaTensor agent was trained via self-play reinforcement learning to manipulate tensor representations of matrix multiplication and achieved a breakthrough: it discovered matrix multiplication algorithms that surpass the decades-old human benchmarks in efficiency. This is a striking example of RL not just playing games but discovering algorithms – essentially using reward signals to guide a search through the space of mathematical formulas. It showcases how MCTS (for planning) and deep RL can work together on combinatorial optimization problems: the agent expands a search tree of partial solutions, guided by value networks and an exploration policy, very much like how it would approach a board game. AlphaTensor’s success underscores the generality of RL methods and how ideas like optimism (self-play explores new moves) and guided search can yield new discoveries.</p>
+</li>
+<li>
+<p>Natural Language and Human Feedback – ChatGPT: A more recent and widely impactful application of reinforcement learning is in natural language processing – specifically, training large language models to better align with human intentions. ChatGPT (OpenAI, 2022) is a prime example, where RL was used to fine-tune a pretrained language model using human feedback. The technique, known as Reinforcement Learning from Human Feedback (RLHF), involves first collecting human preference data on model outputs and then training a reward model that predicts human preference. The language model (policy) is then optimized (via a policy gradient method like PPO) to maximize the reward model’s score, i.e. to produce answers humans would rate highly. This is essentially an RL loop on top of the language model, treating the task of generating helpful, correct responses as an MDP (or episodic decision problem) and using the learned reward function as the reward signal. The result, ChatGPT, is notably more aligned with user expectations than its predecessor models. In our context, ChatGPT’s training illustrates several RL ideas in action: offline data (pretraining on text) combined with online RL fine-tuning, and the critical role of a well-shaped reward function for alignment. It also highlights exploration in a different sense – exploring the space of possible answers to find those that yield high reward according to human feedback. The success of ChatGPT demonstrates that RL is not limited to games or robotics; it can be scaled to very high-dimensional action spaces (like generating entire paragraphs of text) when guided by human-informed rewards. From a theoretical lens, one can view RLHF as optimizing an objective that marries the model’s knowledge (from supervised training) with a policy optimization under a learned reward. While classical exploration algorithms (UCB, Thompson) are not directly apparent in ChatGPT’s training (since the “exploration” comes from the model generating varied outputs and the policy optimization process), the high-level principle remains: use feedback signals to iteratively refine behavior.</p>
+</li>
+<li>
+<p>Scientific and Industrial Applications: Beyond these headline examples, RL is increasingly applied in scientific and industrial domains. The course of our study touched on a few, such as:</p>
+</li>
+</ul>
+<p>Controlling nuclear fusion plasmas: Researchers applied deep RL to control the magnetic coils in a tokamak reactor to sustain plasma configurations. This is a complex continuous control problem with safety constraints, where function approximation and careful exploration (largely in simulations before real experiments) were key.</p>
+<p>Optimizing public health interventions: An RL approach was used to design efficient COVID-19 border testing policies. Framing the problem as a sequential decision task (who to test and when) and using RL to maximize some health outcome or efficiency metric allowed automating policy design that adapted to data.</p>
+<p>Robotics and Autonomous Systems: Many advances in robotics have come from RL algorithms that allow robots to learn locomotion, manipulation, or flight. Often these use deep RL and sometimes simulation-to-reality transfer. The exploration techniques we learned (like curiosity-driven bonuses or domain randomization) help address the challenge of learning in these complex environments.</p>
+<p>Recommender Systems and Online Decision Making: Multi-armed bandit algorithms (including Thompson Sampling and UCB) are widely used in industry for things like A/B testing, website optimization, and personalized recommendations. For example, serving personalized content can be seen as a bandit problem where each content choice is an arm and click-through or engagement is the reward. Companies employ bandit algorithms to balance exploration of new content with exploitation of known user preferences, often in a context of contextual bandits (where the state or context is user features). The theoretical guarantees of bandit algorithms give confidence in their performance, and their simplicity makes them practical at scale.</p>
+<p>In all these cases, the fundamental concepts from this course appear and validate themselves: whether it’s optimism guiding AlphaZero’s search, or Thompson Sampling driving an online recommendation strategy, or policy gradients tuning ChatGPT using human rewards, the same core ideas of reinforcement learning apply. Modern applications often hybridize approaches – for instance, using model-based simulations (AlphaTensor, AlphaZero), or combining learning from offline data with online exploration (ChatGPT’s RLHF, or robotics). This underscores the importance of mastering the basics: understanding value functions, policy optimization, exploration mechanisms, and theoretical limits has direct relevance even as we push RL into new territory.</p>
+<h2 id="final-takeaways">Final Takeaways<a class="headerlink" href="#final-takeaways" title="Permanent link">¶</a></h2>
+<p>In closing, we synthesize a few key insights and lessons from the full RL journey:</p>
+<ul>
+<li>
+<p>Reinforcement Learning Unifies Many Themes: We saw that RL problems range from simple bandits to complex high-dimensional control, but they share the need for sequential decision making under uncertainty. Concepts like state, action, reward, policy, value function, model form a common language to describe problems as diverse as games, robotics, and recommendation systems. Recognizing an appropriate RL formulation (MDP, bandit, etc.) for a given real-world problem is the first step to applying these methods.</p>
+</li>
+<li>
+<p>Exploration vs. Exploitation is Fundamental: The trade-off between trying new actions and leveraging known good actions underpins all of RL. We examined different strategies:</p>
+<ul>
+<li>
+<p>Heuristics like <span class="arithmatex">\(\epsilon\)</span>-greedy (simple but can be suboptimal),</p>
+</li>
+<li>
+<p>Optimistic algorithms (UCB, optimism in value iteration,  exploration bonuses) which ensure systematic exploration using confidence bounds,</p>
+</li>
+<li>
+<p>Probabilistic approaches (Thompson Sampling, randomized value functions) which inject randomness based on uncertainty.</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>Each approach has its advantages – optimism often yields strong guarantees and is conceptually straightforward, while Thompson Sampling often gives excellent practical performance and naturally incorporates prior knowledge. In large-scale problems, clever exploration bonuses (intrinsic rewards for novelty) and approximate uncertainty estimates are key to maintaining exploration. The central lesson is that successful RL requires deliberate exploration strategies; naive exploration can lead to poor sample efficiency or getting stuck in suboptimal behaviors.</p>
+<ul>
+<li>
+<p>Theoretical Foundations Guide Algorithm Design: Concepts like regret and PAC provide ways to formally measure learning efficiency. They not only help us compare algorithms (e.g. which has lower regret or better sample complexity) but have directly inspired algorithmic techniques (like UCB from the idea of minimizing regret, or PAC-inspired algorithms like MBIE-EB and R-MAX designed to guarantee learning within polynomial time). Meanwhile, the Bayesian perspective offers a gold-standard for optimal decision-making given prior info, even if it’s often computationally intractable – it guides us toward algorithms that perform well on average and informs approaches like posterior sampling. As RL practitioners, we should remember:</p>
+<ul>
+<li>
+<p>Regret minimization focuses on not wasting too many opportunities – it’s about learning as fast as possible in an online sense.</p>
+</li>
+<li>
+<p>PAC guarantees focus on bounding the learning time with high confidence – giving safety that an algorithm won’t do too poorly for too long.</p>
+</li>
+<li>
+<p>Bayesian optimality focuses on using prior knowledge efficiently – it’s about doing the best given what you (probabilistically) know.</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>All three perspectives are important; balancing them or choosing the right one depends on the application (e.g., in a one-off A/B test you might care about regret, in a lifelong robot learning you care about sample efficiency with high probability, and in a personalized system you might incorporate Bayesian priors about users).</p>
+<ul>
+<li>
+<p>Function Approximation and Deep RL Open New Possibilities (and Challenges): The leap from tabular or small-scale problems to real-world complexity required using function approximation (especially deep neural networks). This enabled RL to handle images, continuous states, and enormous state spaces – as seen in Atari games, Go, and continuous control benchmarks. The success of deep RL (DQN, policy gradient methods, etc.) comes from blending RL algorithms with powerful representation learning. However, it also brought challenges like stability of training, overfitting, exploration in high dimensions, and reproducibility issues. Key techniques to mitigate these include experience replay, target networks, regularization, large-scale parallel training, and reward shaping. The takeaway is that theoretical convergence guarantees often break down with function approximation, so a lot of practical know-how and experimentation is needed. Yet, the core ideas (Bellman equations, policy improvement, etc.) still apply – just approximate. The field is actively developing better theories for RL with function approximation (e.g. understanding generalization, error propagation) and techniques for more reliable training.</p>
+</li>
+<li>
+<p>Real-World Impact and Ongoing Research: Reinforcement learning has graduated from textbook problems to impacting real-world systems. Its principles have powered superhuman game AIs, improved scientific research (e.g. algorithm discovery, experiment design), enhanced language models, and optimized business decisions. At the same time, truly robust and general-purpose RL is still an open challenge. Issues of stability, efficiency, and safety remain – for instance:</p>
+<ul>
+<li>Developing algorithms that work out-of-the-box with minimal tuning for any problem (robustness).</li>
+<li>Improving data efficiency so that RL can be applied with limited real-world interactions (e.g., via model-based methods, better exploration, or transfer learning).</li>
+<li>Integrating learning and planning seamlessly, and handling settings that mix offline data with online exploration.</li>
+<li>Expanding the RL framework to account for multiple objectives, collaboration or competition (multi-agent RL), and richer feedback modalities beyond scalar rewards.</li>
+</ul>
+</li>
+</ul>
+<p>These are active research directions. The skills and concepts acquired – from understanding theoretical bounds to implementing algorithms – equip us to tackle these frontiers.</p>
+<p>In summary, the journey from multi-armed bandits to deep reinforcement learning has taught us not only a catalogue of algorithms, but a way of thinking about sequential decision problems. We learned how to measure learning efficiency and why exploration is hard yet critical. We saw simple ideas like optimism and probability matching scale up to complex systems that play Go or converse in English. As you move forward from this textbook, remember the foundational principles: reward is your guide, value estimation is your tool, policy is your output, and exploration is your catalyst. With these in mind, you are well-prepared to both apply RL to challenging problems and to contribute to the advancing frontier of reinforcement learning research.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../13_montecarlo/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 13. Monte Carlo Tree Search and Planning">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                13. Monte Carlo Tree Search and Planning
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      © 2025 Salman Khan — Educational Use Only
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/SalK91/convex_optimization" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.indexes", "navigation.path", "navigation.top", "navigation.footer", "toc.follow", "content.code.copy", "content.action.edit", "content.action.view", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="../../js/print-site.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>
