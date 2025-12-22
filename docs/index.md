@@ -5,7 +5,7 @@ These notes are inspired by and draw heavily on material from:
 - Stanford CS234: Reinforcement Learning (Spring 2024)
 - Stanford CS224R: Deep Reinforcement Learning (Spring 2025) 
 
-The goal is not to reproduce these courses, but to synthesize their core ideas into a coherent, optimization- and mathematics-first perspective suitable for practitioners and researchers.
+The goal is not to reproduce these courses, but to synthesize their core ideas into a coherent, optimization and mathematics first perspective suitable for practitioners and researchers.
 
 
 

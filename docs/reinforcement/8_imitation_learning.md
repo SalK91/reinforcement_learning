@@ -33,7 +33,7 @@ The goal of imitation learning can be stated as: find a policy $\pi$ for the age
 
 (If we imagine there was some true but unknown reward $R$ the expert is optimizing, then ideally $\pi$ should perform nearly as well as $\pi_E$ on that reward. IL attempts to reach that outcome via demonstrations rather than explicit reward feedback.)
 
-## 3. Behavioral Cloning: Learning by Supervised Imitation
+## Behavioral Cloning: Learning by Supervised Imitation
 The most direct approach to imitation learning is Behavioral Cloning. Behavioral cloning treats imitation as a pure supervised learning problem: we train a policy to map states to the expert’s actions, using the expert demonstrations as labeled examples. In essence, the agent "clones" the expert's behavior by learning to predict the expert's action in any given state.
 
 > BC: Learn state to action mappings using expert demonstrations.
@@ -59,6 +59,8 @@ Training a behavioral cloning agent typically involves three steps:
 
 3. Deployment: Once the policy is trained (approximating $\pi_E$), we fix $\theta$. The agent then acts autonomously: at each state $s$, it outputs $a = \pi_\theta(s)$ as its action. Ideally, this learned policy will behave similarly to the expert in the environment.
 
+
+
 If the expert demonstrations are representative of the situations the agent will face, behavioral cloning can yield a policy that mimics the expert’s behavior effectively. BC has some clear advantages:
 
 * Simplicity: It reduces policy learning to standard supervised learning, for which many stable algorithms and optimizations exist.
@@ -79,9 +81,25 @@ This phenomenon is known as covariate shift or distributional shift. The learner
 
 Another limitation is that BC does not inherently guarantee optimality or improvement beyond the expert: the policy is only as good as the demonstration data. If the expert is suboptimal or the dataset doesn’t cover certain scenarios, the cloned policy will reflect those shortcomings and cannot improve by itself (since it has no feedback signal like reward to further refine its behavior). In reinforcement learning terms, BC has no notion of feedback for success or failure; it merely apes the expert, so it cannot discover better strategies or correct mistakes outside the expert's shadow.
 
+![Image Source](images/compounding_error.png)
+*Figure : Compounding error — Source: [CS 224 - Stanford](https://cs224r.stanford.edu/slides/02_cs224r_imitation_2025.pdf)*
+
 Researchers have developed strategies to mitigate the covariate shift problem. One approach is Dataset Aggregation (DAgger), which is an iterative algorithm: after training an initial policy via BC, let the policy interact with the environment and observe where it makes mistakes or visits unseen states; then have the expert provide the correct actions for those states, add these state-action pairs to the training set, and retrain the policy. By repeating this process, the policy’s training distribution is gradually brought closer to the distribution it will encounter when it controls the agent. DAgger can significantly reduce compounding errors, but it requires ongoing access to an expert for feedback during training.
 
-In summary, behavioral cloning is a powerful first step for imitation learning—it's straightforward and avoids many challenges of pure RL. But one must be mindful of its limitations: a blindly cloned policy can fail catastrophically when it encounters situations outside the expert’s experience. This motivates more sophisticated imitation learning methods that incorporate the dynamics of the environment and attempt to infer the intent behind expert actions, rather than just copying them. We turn to those next.
+![alt text](images/dagger.png)
+*Figure : DAgger: [CS 224 - Stanford](https://cs224r.stanford.edu/slides/02_cs224r_imitation_2025.pdf)*
+
+### Stochastic vs Deterministic Polciy
+Another limitation of standard behavioral cloning, is that it implicitly assumes a *deterministic* expert policy or a unimodal conditional action distribution. In practice, expert behavior is often stochastic or multimodal: for the same state, multiple actions may all be valid. For example, a human driver approaching a slow vehicle may either merge left or slow down and stay in lane. When demonstrations from multiple experts or multiple strategies are aggregated, the conditional distribution $p(a \mid s)$ can become highly multimodal.
+
+However, commonly used supervised objectives for continuous actions—such as mean squared error ($\ell_2$ regression)—do not model this distribution. Instead, they regress to the *conditional mean* of the expert actions. This can lead to pathological behavior: the learned policy outputs an action that is an average of several valid modes but corresponds to no valid expert behavior. In control settings, such “mean actions” can be unsafe or unstable (e.g., steering straight into an obstacle instead of decisively turning left or right). Increasing network capacity does not resolve this issue, because the problem lies in the loss function and output distribution, not in function approximation. Neural network expressivity is fundamentally different from *distributional expressivity*.
+
+This observation motivates viewing imitation learning not as deterministic regression, but as learning a conditional action distribution. Instead of learning a point estimate $a = \pi_\theta(s)$, we aim to learn a rich model of $\pi_\theta(a \mid s)$ that can represent multimodality and uncertainty. Generative policy models provide a principled way to do this. Examples include mixture density networks (e.g., mixtures of Gaussians), discretized autoregressive action models, and diffusion-based policies. These approaches explicitly parameterize or sample from complex conditional distributions and are trained by maximizing the log-likelihood of expert actions under the model.
+
+By framing behavioral cloning as maximum likelihood estimation of an expressive generative policy, imitation learning becomes capable of capturing the full structure of expert behavior rather than collapsing it to an average. This shift—from discriminative regression to generative modeling—is essential for robust imitation learning in realistic, multimodal decision-making environments and forms the foundation for modern imitation learning methods used in robotics and autonomous systems.
+
+![alt text](images/gen_bc.png)
+*Figure : Generative Mpdels for BC — Source: [CS 224 - Stanford](https://cs224r.stanford.edu/slides/02_cs224r_imitation_2025.pdf)*
 
 ## Inverse Reinforcement Learning: Learning the "Why"
 Behavioral cloning directly learns what to do (mapping states to actions) but does not capture why those actions are desirable. Inverse Reinforcement Learning (IRL) instead asks: Given expert behavior, what underlying reward function $R$ could explain it? In other words, IRL attempts to reverse-engineer the expert's objectives from its observed behavior.
@@ -233,7 +251,7 @@ Assuming known dynamics and linear rewards:
 
 Apprenticeship Learning usually refers to the scenario where an agent learns to perform a task by iteratively improving its policy using expert demonstrations as a reference. In many contexts, this term is used when an IRL algorithm is combined with policy learning: the agent behaves as an apprentice to the expert, gradually mastering the task. The classic formulation by Abbeel and Ng (2004) introduced apprenticeship learning via IRL, which guarantees that the learner’s policy will perform nearly as well as the expert’s, given enough demonstration data.
 
- 
+
 
 One way to think of apprenticeship learning is as follows: rather than directly cloning actions, we try to match the feature expectations of the expert. Suppose we have some features $\phi(s)$ of states (or state-action pairs) that capture what we care about in the task (for example, in driving, features might include lane deviation, speed, collision count, etc.). The expert will have some expected cumulative feature values $ \mathbb{E}_{\pi_E}\left[\sum_t \phi(s_t)\right] $. Apprenticeship learning methods aim for the learner to achieve similar feature expectations.
 
