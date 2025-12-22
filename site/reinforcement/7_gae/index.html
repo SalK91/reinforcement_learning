@@ -1,0 +1,1483 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Structured lecture notes on Reinforcement Learning.">
+      
+      
+        <meta name="author" content="Salman Khan">
+      
+      
+        <link rel="canonical" href="https://salk91.github.io/reinforcement_learning/reinforcement/7_gae/">
+      
+      
+        <link rel="prev" href="../6_pg2/">
+      
+      
+        <link rel="next" href="../8_imitation_learning/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.20">
+    
+    
+      
+        <title>7. Advances in Policy Optimization – GAE, TRPO, and PPO - Reinforcement Learning Lecture Notes</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.e53b48f4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather:300,300i,400,400i,700,700i%7CFira+Code:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Merriweather";--md-code-font:"Fira Code"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/print-site.css">
+    
+      <link rel="stylesheet" href="../../css/print-site-material.css">
+    
+      <link rel="stylesheet" href="../../styles/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-7-advances-in-policy-optimization-gae-trpo-and-ppo" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Reinforcement Learning Lecture Notes" class="md-header__button md-logo" aria-label="Reinforcement Learning Lecture Notes" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Reinforcement Learning Lecture Notes
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              7. Advances in Policy Optimization – GAE, TRPO, and PPO
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="cyan" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="cyan" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m3.55 19.09 1.41 1.41 1.8-1.79-1.42-1.42M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6c0-3.32-2.69-6-6-6m8 7h3v-2h-3m-2.76 7.71 1.8 1.79 1.41-1.41-1.79-1.8M20.45 5l-1.41-1.4-1.8 1.79 1.42 1.42M13 1h-2v3h2M6.76 5.39 4.96 3.6 3.55 5l1.79 1.81zM1 13h3v-2H1m12 9h-2v3h2"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/SalK91/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../1_intro/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reinforcement Learning
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../print_page/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Print/PDF
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Reinforcement Learning Lecture Notes" class="md-nav__button md-logo" aria-label="Reinforcement Learning Lecture Notes" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    Reinforcement Learning Lecture Notes
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/SalK91/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Reinforcement Learning
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Reinforcement Learning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1_intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    1. Introduction to Reinforcement Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2_mdp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    2. MDPs &amp; Dynamic Programming
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3_modelfree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    3. Model-Free Prediction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../4_model_free_control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    4. Model-Free Control
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../5_policy_gradient/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    5. Policy Gradient Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../6_pg2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    6. Policy Gradient Variance Reduction and Actor-Critic
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    7. Advances in Policy Optimization – GAE, TRPO, and PPO
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    7. Advances in Policy Optimization – GAE, TRPO, and PPO
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#generalized-advantage-estimation-gae" class="md-nav__link">
+    <span class="md-ellipsis">
+      Generalized Advantage Estimation (GAE)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kl-divergence-constraints-and-surrogate-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      KL Divergence Constraints and Surrogate Objectives
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trust-region-policy-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Trust Region Policy Optimization
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proximal-policy-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Proximal Policy Optimization
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#putting-it-together-sample-efficiency-stability-and-monotonic-improvement" class="md-nav__link">
+    <span class="md-ellipsis">
+      Putting It Together: Sample Efficiency, Stability, and Monotonic Improvement
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mental-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental Map
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../8_imitation_learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    8. Imitation Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../9_rlhf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    9. RLHF
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10_offline_rl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    10. Offline Reinforcement Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11_fast_rl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    11. Data-Efficient Reinforcement Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12_fast_mdps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    12. Fast Reinforcement Learning in MDPs and Generalization
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13_montecarlo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    13. Monte Carlo Tree Search and Planning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14_final/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    14. Summary and Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../print_page/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Print/PDF
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#generalized-advantage-estimation-gae" class="md-nav__link">
+    <span class="md-ellipsis">
+      Generalized Advantage Estimation (GAE)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kl-divergence-constraints-and-surrogate-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      KL Divergence Constraints and Surrogate Objectives
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trust-region-policy-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Trust Region Policy Optimization
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proximal-policy-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Proximal Policy Optimization
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#putting-it-together-sample-efficiency-stability-and-monotonic-improvement" class="md-nav__link">
+    <span class="md-ellipsis">
+      Putting It Together: Sample Efficiency, Stability, and Monotonic Improvement
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mental-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental Map
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/SalK91/edit/main/docs/reinforcement/7_gae.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/SalK91/raw/main/docs/reinforcement/7_gae.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"></path></svg>
+    </a>
+  
+
+
+<h1 id="chapter-7-advances-in-policy-optimization-gae-trpo-and-ppo">Chapter 7: Advances in Policy Optimization – GAE, TRPO, and PPO<a class="headerlink" href="#chapter-7-advances-in-policy-optimization-gae-trpo-and-ppo" title="Permanent link">¶</a></h1>
+<p>In the previous chapter, we improved the foundation of policy gradients by reducing variance (using baselines) and introducing actor–critic methods. We also noted that unrestricted policy updates can be unstable and sample-inefficient. In this chapter, we present modern advances in policy optimization that build on those ideas to achieve much better performance in practice. We focus on two main developments: Generalized Advantage Estimation (GAE), which refines how we estimate advantages to balance bias and variance, and trust-region methods (specifically Trust Region Policy Optimization (TRPO) and Proximal Policy Optimization (PPO)) that ensure updates do not destabilize the policy. These techniques enable more sample-efficient, stable learning by reusing data safely and preventing large detrimental policy shifts.</p>
+<h2 id="generalized-advantage-estimation-gae">Generalized Advantage Estimation (GAE)<a class="headerlink" href="#generalized-advantage-estimation-gae" title="Permanent link">¶</a></h2>
+<p>Accurate and low-variance advantage estimates are crucial for effective policy gradient updates. Recall that the policy gradient update uses the term <span class="arithmatex">\(\nabla_\theta \log \pi_\theta(a_t|s_t)\,A(s_t,a_t)\)</span> – if <span class="arithmatex">\(A(s_t,a_t)\)</span> is noisy or biased, it can severely affect learning. Advantage can be estimated via:
+- Monte Carlo returns: <span class="arithmatex">\(A_t = G_t - V(s_t)\)</span> using the full return <span class="arithmatex">\(G_t\)</span> (summing all future rewards until episode end). This is an unbiased estimator of the true advantage, but it has very high variance because it includes all random future outcomes.</p>
+<ul>
+<li>
+<p>One-step TD returns: <span class="arithmatex">\(A_t \approx r_t + \gamma V(s_{t+1}) - V(s_t)\)</span>, using the critic’s bootstrapped estimate of the future. This one-step advantage (equivalently the TD error <span class="arithmatex">\(\delta_t\)</span>) has much lower variance (it relies on the learned value for the next state) but is biased by function approximation and by truncating the return after one step.</p>
+</li>
+<li>
+<p>n-Step returns:We can also use intermediate approaches, for example a 2-step return <span class="arithmatex">\(R^{(2)}t = r_t + \gamma r{t+1} + \gamma^2 V(s_{t+2})\)</span> giving an advantage <span class="arithmatex">\(\hat{A}^{(2)}_t = R^{(2)}_t - V(s_t)\)</span>. In general, an n-step advantage estimator can be written as:</p>
+<div class="arithmatex">\[A^{t}(n) = \sum_{i=0}^{n-1} \gamma^{i} r_{t+i+1} + \gamma^{n} V(s_{t+n}) -V(s_{t})\]</div>
+<p>which blends <span class="arithmatex">\(n\)</span> actual rewards with a bootstrap at time <span class="arithmatex">\(t+n\)</span>. Smaller <span class="arithmatex">\(n\)</span> (like 1) means more bias (due to heavy reliance on <span class="arithmatex">\(V\)</span>) but low variance; larger <span class="arithmatex">\(n\)</span> (approaching the episode length) reduces bias but increases variance.</p>
+</li>
+</ul>
+<p>The pattern becomes clearer if we express these in terms of the TD error <span class="arithmatex">\(\delta_t\)</span> (the one-step advantage at <span class="arithmatex">\(t\)</span>):</p>
+<p>
+<script type="math/tex; mode=display"> \delta_t \;=\; r_t + \gamma V(s_{t+1}) - V(s_t). </script>
+- For a 1-step return, <span class="arithmatex">\(\hat{A}^{(1)}_t = \delta_t\)</span>.
+- For a 2-step return, <span class="arithmatex">\(\hat{A}^{(2)}t = \delta_t + \gamma\,\delta\)</span>.
+- For an <span class="arithmatex">\(n\)</span>-step return, <span class="arithmatex">\(\hat{A}^{(n)}t = \delta_t + \gamma \delta_{t+1} + \gamma^2 \delta_{t+2} + \cdots + \gamma^{n-1}\delta_{t+n-1}\)</span></p>
+<p>Each additional term <span class="arithmatex">\(\gamma^i \delta_{t+i}\)</span> extends the return by one more step of real reward before bootstrapping, increasing bias a bit (since it assumes the later <span class="arithmatex">\(\delta\)</span> terms are based on an approximate <span class="arithmatex">\(V\)</span>) but capturing more actual reward outcomes (reducing variance less).</p>
+<p>Generalized Advantage Estimation (GAE) takes this idea to its logical conclusion by forming a weighted sum of all n-step advantages, with exponentially decreasing weights. Instead of picking a fixed <span class="arithmatex">\(n\)</span>, GAE uses a parameter <span class="arithmatex">\(0 \le \lambda \le 1\)</span> to blend advantages of different lengths:</p>
+<div class="arithmatex">\[\hat{A}^{\text{GAE}(\gamma,\lambda)}_t \;=\; (1-\lambda)\Big(\hat{A}^{(1)}_t + \lambda\,\hat{A}^{(2)}_t + \lambda^2\,\hat{A}^{(3)}_t + \cdots\Big)\]</div>
+<p>This infinite series can be shown to simplify to a very convenient form:</p>
+<div class="arithmatex">\[\hat{A}_t^{\text{GAE}(\gamma,\lambda)} = \sum_{i=0}^{\infty} (\gamma \lambda)^i\delta_{t+i}\]</div>
+<p>which is an exponentially-weighted sum of the future TD errors. In practice, this is implemented with a simple recursion running backward through each trajectory (since it’s a sum of discounted TD errors).</p>
+<p>Key intuition: <span class="arithmatex">\(\lambda\)</span> controls the bias–variance trade-off in advantage estimation:</p>
+<ul>
+<li>
+<p><span class="arithmatex">\(\lambda = 0\)</span> uses only the one-step TD error: <span class="arithmatex">\(\hat{A}^{\text{GAE}(0)}_t = \delta_t\)</span>. This is the lowest-variance, highest-bias estimator (similar to TD(0) advantage)[21].</p>
+</li>
+<li>
+<p><span class="arithmatex">\(\lambda = 1\)</span> uses an infinitely long sum of un-discounted TD errors, which in theory equals the full Monte Carlo return advantage (since all bootstrapping is deferred to the end). This is unbiased (in the limit of exact <span class="arithmatex">\(V\)</span>) but highest variance – essentially Monte Carlo estimation.</p>
+</li>
+<li>
+<p>Intermediate <span class="arithmatex">\(0&lt;\lambda&lt;1\)</span> gives a mixture. A typical choice is <span class="arithmatex">\(\lambda = 0.95\)</span> in many applications, which provides a good balance (mostly long-horizon returns with a bit of bootstrapping to damp variance).</p>
+</li>
+</ul>
+<p>GAE is not introducing a new kind of return; rather, it generalizes existing returns. It smoothly interpolates between TD and Monte Carlo methods. When <span class="arithmatex">\(\lambda\)</span> is low, GAE trusts the critic more (using more bootstrapped estimates); when <span class="arithmatex">\(\lambda\)</span> is high, GAE leans toward actual returns over many steps.
+In modern actor–critic algorithms (including TRPO and PPO), GAE is used to compute the advantage for each state-action in a batch. A typical implementation for each iteration is:</p>
+<ol>
+<li>Collect trajectories using the current policy <span class="arithmatex">\(\pi_{\theta}\)</span> (e.g. run <span class="arithmatex">\(N\)</span> episodes or <span class="arithmatex">\(T\)</span> time steps of experience).</li>
+<li>Compute state values <span class="arithmatex">\(V(s_t)\)</span> for each state visited (using the current value function estimate).</li>
+<li>Compute TD residuals <span class="arithmatex">\(\delta_t = r_t + \gamma V(s_{t+1}) - V(s_t)\)</span> for each time step.</li>
+<li>
+<p>Apply GAE formula: going from <span class="arithmatex">\(t=T-1\)</span> down to <span class="arithmatex">\(0\)</span>, accumulate <span class="arithmatex">\(\hat{A}_t = \delta_t + \gamma \lambda, \hat{A}{t+1}\)</span>, with <span class="arithmatex">\(\hat{A}_{T} = 0\)</span>. This yields <span class="arithmatex">\(\hat{A}_t \approx \sum{i\ge0} (\gamma \lambda)^i \delta{t+i}\)</span>.</p>
+</li>
+<li>
+<p>Use Advantages for Update: These <span class="arithmatex">\(\hat{A}_t\)</span> values serve as the advantage estimates in the policy gradient update. Simultaneously, you can compute proxy returns for the critic by adding <span class="arithmatex">\(\hat{A}_t\)</span> to the baseline <span class="arithmatex">\(V(s_t)\)</span> (i.e. <span class="arithmatex">\(\hat{R}_t = \hat{A}_t + V(s_t)\)</span>, an estimate of the actual return) and use those to update the value function parameters.</p>
+</li>
+</ol>
+<p>The result of GAE is a much smoother, lower-variance advantage signal for the actor, without introducing too much bias. Empirically, this greatly stabilizes training: the policy doesn’t overreact to single high-return episodes, and it doesn’t ignore long-term outcomes either. GAE essentially bridges the gap between the high-variance Monte Carlo world of Chapter 5 and the low-variance TD world of Chapter 3–4, and it has become a standard component in virtually all modern policy optimization algorithms.</p>
+<h2 id="kl-divergence-constraints-and-surrogate-objectives">KL Divergence Constraints and Surrogate Objectives<a class="headerlink" href="#kl-divergence-constraints-and-surrogate-objectives" title="Permanent link">¶</a></h2>
+<p>We now turn to the question of stable policy updates. As discussed, a major issue with vanilla policy gradient is that a single update can accidentally push the policy into a disastrous region (because the gradient is computed at the current policy but we might step too far). To make updates safer, we want to constrain how much the policy changes at each step. A natural way to measure change between the old policy <span class="arithmatex">\(\pi_{\text{old}}\)</span> and a new policy <span class="arithmatex">\(\pi_{\text{new}}\)</span> is to use the Kullback–Leibler (KL) divergence. For example, we can require:</p>
+<div class="arithmatex">\[\mathbb{E}_{s \sim d^{\pi_{\text{old}}}}
+\left[
+D_{\mathrm{KL}}\bigl(\pi_{\text{new}}(\cdot \mid s)\,\|\,\pi_{\text{old}}(\cdot \mid s)\bigr)
+\right]
+\le \delta\]</div>
+<p>for some small <span class="arithmatex">\(\delta\)</span>. This means that on average over states (under the old policy’s state distribution <span class="arithmatex">\(d_{\pi_{\text{old}}}\)</span>), the new policy’s probability distribution is not too far from the old policy’s distribution. A small KL divergence ensures the policies behave similarly, limiting the “surprise” from one update.</p>
+<p>But how do we optimize under such a constraint? We need an objective function that tells us whether <span class="arithmatex">\(\pi_{\text{new}}\)</span> is better than <span class="arithmatex">\(\pi_{\text{old}}\)</span>. Fortunately, theory provides a useful tool: a surrogate objective that approximates the change in performance if the policy change is small. One version, derived from the policy performance difference lemma and monotonic improvement theorem, is:</p>
+<div class="arithmatex">\[L_{\pi_{\text{old}}}(\pi_{\text{new}})
+=
+\mathbb{E}_{s,a \sim \pi_{\text{old}}}
+\left[
+\frac{\pi_{\text{new}}(a \mid s)}{\pi_{\text{old}}(a \mid s)}
+A_{\pi_{\text{old}}}(s,a)
+\right]\]</div>
+<p>This is an objective functional—it evaluates the new policy using samples from the old policy, weighting rewards by the importance ratio <span class="arithmatex">\(r(s,a) = \pi_{\text{new}}(a|s)/\pi_{\text{old}}(a|s)\)</span>. Intuitively, <span class="arithmatex">\(L_{\pi_{\text{old}}}(\pi_{\text{new}})\)</span> is asking: if the old policy visited state <span class="arithmatex">\(s\)</span> and took action <span class="arithmatex">\(a\)</span>, how good would that decision be under the new policy’s probabilities? Actions that the new policy wants to do more of (<span class="arithmatex">\(r &gt; 1\)</span>) will contribute their advantage (good or bad) proportionally more.</p>
+<p>Critically, one can show that if <span class="arithmatex">\(\pi_{\text{new}}\)</span> is very close to <span class="arithmatex">\(\pi_{\text{old}}\)</span> (in KL terms), then improving this surrogate <span class="arithmatex">\(L\)</span> guarantees an improvement in the true return <span class="arithmatex">\(J(\pi)\)</span>. Specifically, there is a bound such that:</p>
+<div class="arithmatex">\[J(\pi_{\text{new}})
+\ge
+J(\pi_{\text{old}})
++
+L_{\pi_{\text{old}}}(\pi_{\text{new}})
+-
+C \,
+\mathbb{E}_{s \sim d^{\pi_{\text{old}}}}
+\left[
+D_{\mathrm{KL}}\bigl(\pi_{\text{new}} \,\|\, \pi_{\text{old}}\bigr)[s]
+\right]\]</div>
+<p>for some constant <span class="arithmatex">\(C\)</span> related to horizon and policy support. When the KL divergence is small, the last term is second-order (negligible), so roughly we get <span class="arithmatex">\(J(\pi_{\text{new}}) \gtrapprox J(\pi_{\text{old}}) + L_{\pi_{\text{old}}}(\pi_{\text{new}})\)</span>. In other words, maximizing <span class="arithmatex">\(L\)</span> while keeping KL small ensures monotonic improvement: each update should not reduce true performance.</p>
+<p>This insight leads directly to a constrained optimization formulation for safe policy updates:</p>
+<ul>
+<li>Objective: Maximize the surrogate <span class="arithmatex">\(L_{\pi_{\text{old}}}(\pi_{\text{new}})\)</span> (i.e. maximize expected advantage-weighted probability ratios).</li>
+<li>Constraint: Limit the policy divergence via <span class="arithmatex">\(D_{\mathrm{KL}}(\pi_{\text{new}}\Vert \pi_{\text{old}}) \le \delta\)</span> (for some small <span class="arithmatex">\(\delta\)</span>).
+Algorithms that implement this idea are called trust-region methods, because they optimize the policy within a trust region of the old policy. Next, we discuss two prominent algorithms: TRPO, which tackles the constrained problem directly (with some approximations), and PPO, which simplifies it into an easier unconstrained loss function.</li>
+</ul>
+<h2 id="trust-region-policy-optimization">Trust Region Policy Optimization<a class="headerlink" href="#trust-region-policy-optimization" title="Permanent link">¶</a></h2>
+<p>Trust Region Policy Optimization (TRPO) is a seminal algorithm that explicitly embodies the constrained update approach. TRPO chooses a new policy by approximately solving:</p>
+<div class="arithmatex">\[\max_{\theta_{\text{new}}} \; L_{\theta_{\text{old}}}(\theta_{\text{new}})
+\quad \text{s.t.} \quad
+\mathbb{E}_{s \sim d^{\pi_{\theta_{\text{old}}}}}
+\left[
+D_{\mathrm{KL}}\bigl(\pi_{\theta_{\text{new}}} \,\|\, \pi_{\theta_{\text{old}}}\bigr)
+\right]
+\le \delta\]</div>
+<p>where <span class="arithmatex">\(L_{\theta_{\text{old}}}(\theta_{\text{new}})\)</span> is the surrogate objective defined above, and <span class="arithmatex">\(\delta\)</span> is a small trust-region threshold. In practice, solving this exactly is difficult due to the infinite-dimensional policy space. TRPO makes it tractable by using a few key ideas:</p>
+<ul>
+<li>
+<p>Approximating the constraint via a quadratic expansion of the KL divergence (which yields a Fisher Information Matrix). This turns the problem into something like a second-order update (a natural gradient step). In fact, TRPO’s solution can be shown to correspond to a natural gradient ascent:</p>
+<p><span class="arithmatex">\(\theta_{\text{new}} = \theta_{\text{old}} + \sqrt{\frac{2\delta}{g^T F^{-1} g}}\; F^{-1} g\)</span>$</p>
+<p>where <span class="arithmatex">\(g = \nabla_\theta L\)</span> and <span class="arithmatex">\(F\)</span> is the Fisher matrix. This ensures the KL constraint is satisfied approximately, and is equivalent to scaling the gradient by <span class="arithmatex">\(F^{-1}\)</span>. In simpler terms, TRPO updates <span class="arithmatex">\(\theta\)</span> in a direction that accounts for the curvature of the policy space, so that the change in policy (KL) is proportional to the step size.</p>
+</li>
+<li>
+<p>Using a line search to ensure the new policy actually improves <span class="arithmatex">\(J(\pi)\)</span>. TRPO will back off the step size if the updated policy violates the constraint or fails to achieve a performance improvement. This safeguard maintains the monotonic improvement guarantee in practice.</p>
+</li>
+</ul>
+<p>A simplified outline of TRPO is:</p>
+<ol>
+<li>Collect trajectories with the current policy <span class="arithmatex">\(\pi_{\theta_{\text{old}}}\)</span>.</li>
+<li>Estimate advantages <span class="arithmatex">\(\hat{A}_t\)</span> for each time step (using GAE or another method for high-quality advantage estimates).</li>
+<li>Compute surrogate objective <span class="arithmatex">\(L(\theta) = \mathbb{E}[r_t(\theta), \hat{A}t]\)</span> where <span class="arithmatex">\(r_t(\theta) = \frac{\pi{\theta}(a_t|s_t)}{\pi_{\theta_{\text{old}}}(a_t|s_t)}\)</span>.</li>
+<li>Approximate KL constraint: Compute the policy gradient <span class="arithmatex">\(\nabla_\theta L\)</span> and the Fisher matrix <span class="arithmatex">\(F\)</span> (via sample-based estimation of the Hessian of the KL divergence). Solve for the update direction <span class="arithmatex">\(p \approx F^{-1} \nabla_\theta L\)</span> (e.g. using conjugate gradient).</li>
+<li>Line search: Scale and apply the update step <span class="arithmatex">\(\theta \leftarrow \theta + p\)</span> gradually, checking the KL and improvement. Stop when the KL constraint or improvement criterion is satisfied.</li>
+</ol>
+<p>TRPO’s updates are therefore conservative by design – they will only take as large a step as can be trusted not to degrade performance. TRPO was influential because it demonstrated much more stable and reliable training on complex continuous control tasks than vanilla policy gradient.</p>
+<p>Strengths and Weaknesses of TRPO: TRPO offers a theoretical guarantee of non-destructive updates – under certain assumptions, each iteration is guaranteed to improve or at least not decrease performance. It uses a natural gradient approach that respects the geometry of policy space, which is more effective than an arbitrary gradient in parameter space. However, TRPO comes at a cost: it requires calculating second-order information (the Fisher matrix), and implementing the conjugate gradient solver and line search adds complexity. The algorithm can be slower per iteration and is more complex to code and tune. In practice, TRPO, while effective, proved somewhat cumbersome for large-scale problems due to these complexities.</p>
+<h2 id="proximal-policy-optimization">Proximal Policy Optimization<a class="headerlink" href="#proximal-policy-optimization" title="Permanent link">¶</a></h2>
+<p>Proximal Policy Optimization (PPO) was introduced as a simpler, more user-friendly variant of TRPO that achieves similar results with only first-order optimization. The core idea of PPO is to keep the spirit of trust-region updates (don’t move the policy too far in one go) but implement it via a relaxed objective that can be optimized with standard stochastic gradient descent.
+There are two main variants of PPO:</p>
+<h3 id="kl-penalty-objective">KL-Penalty Objective:<a class="headerlink" href="#kl-penalty-objective" title="Permanent link">¶</a></h3>
+<p>One version of PPO adds the KL-divergence as a penalty to the objective rather than a hard constraint. The objective becomes:</p>
+<div class="arithmatex">\[J_{\text{PPO-KL}}(\theta)
+=
+\mathbb{E}\!\left[ r_t(\theta)\, \hat{A}^t \right]
+-
+\beta \,\mathbb{E}\!\left[
+D_{\mathrm{KL}}\!\left(\pi_{\theta} \,\|\, \pi_{\theta_{\text{old}}}\right)
+\right]\]</div>
+<p>where <span class="arithmatex">\(\beta\)</span> is a coefficient determining how strongly to penalize deviation from the old policy. If the KL divergence in an update becomes too large, <span class="arithmatex">\(\beta\)</span> can be adjusted (increased) to enforce smaller steps in subsequent updates. This approach maintains a soft notion of a trust region.</p>
+<h4 id="algorithm-ppo-with-kl-penalty">Algorithm (PPO with KL Penalty)<a class="headerlink" href="#algorithm-ppo-with-kl-penalty" title="Permanent link">¶</a></h4>
+<p>1: Input: initial policy parameters <span class="arithmatex">\(\theta_0\)</span>, initial KL penalty <span class="arithmatex">\(\beta_0\)</span>, target KL-divergence <span class="arithmatex">\(\delta\)</span><br>
+2: for <span class="arithmatex">\(k = 0, 1, 2, \ldots\)</span> do<br>
+3: <span class="arithmatex">\(\quad\)</span> Collect set of partial trajectories <span class="arithmatex">\(\mathcal{D}_k\)</span> using policy <span class="arithmatex">\(\pi_k = \pi(\theta_k)\)</span><br>
+4: <span class="arithmatex">\(\quad\)</span> Estimate advantages <span class="arithmatex">\(\hat{A}^t_k\)</span> using any advantage estimation algorithm<br>
+5: <span class="arithmatex">\(\quad\)</span> Compute policy update by approximately solving<br>
+<span class="arithmatex">\(\quad\quad\)</span> <span class="arithmatex">\(\theta_{k+1} = \arg\max_\theta \; L_{\theta_k}(\theta) - \beta_k \hat{D}_{KL}(\theta \,\|\, \theta_k)\)</span><br>
+6: <span class="arithmatex">\(\quad\)</span> Implement this optimization with <span class="arithmatex">\(K\)</span> steps of minibatch SGD (e.g., Adam)<br>
+7: <span class="arithmatex">\(\quad\)</span> Measure actual KL: <span class="arithmatex">\(\hat{D}_{KL}(\theta_{k+1}\|\theta_k)\)</span><br>
+8: <span class="arithmatex">\(\quad\)</span> if <span class="arithmatex">\(\hat{D}_{KL}(\theta_{k+1}\|\theta_k) \ge 1.5\delta\)</span> then<br>
+9: <span class="arithmatex">\(\quad\quad\)</span> Increase penalty: <span class="arithmatex">\(\beta_{k+1} = 2\beta_k\)</span><br>
+10: <span class="arithmatex">\(\quad\)</span> else if <span class="arithmatex">\(\hat{D}_{KL}(\theta_{k+1}\|\theta_k) \le \delta/1.5\)</span> then<br>
+11: <span class="arithmatex">\(\quad\quad\)</span> Decrease penalty: <span class="arithmatex">\(\beta_{k+1} = \beta_k/2\)</span><br>
+12: <span class="arithmatex">\(\quad\)</span> end if<br>
+13: end for  </p>
+<h3 id="clipped-surrogate-objective-ppo-clip">Clipped Surrogate Objective (PPO-Clip):<a class="headerlink" href="#clipped-surrogate-objective-ppo-clip" title="Permanent link">¶</a></h3>
+<p>The more popular variant of PPO uses a clipped surrogate objective to restrict policy updates:</p>
+<div class="arithmatex">\[L^\text{CLIP}(\theta)
+=
+\mathbb{E}_{t}\!\left[
+\min\!\Big(
+r_t(\theta)\,\hat{A}^t,\;
+\text{clip}\!\big(r_t(\theta),\, 1-\epsilon,\, 1+\epsilon\big)\,\hat{A}^t
+\Big)
+\right]\]</div>
+<p>where <span class="arithmatex">\(r_t(\theta) = \frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{\text{old}}}(a_t|s_t)}\)</span> as before, and <span class="arithmatex">\(\epsilon\)</span> is a small hyperparameter (e.g. 0.1 or 0.2) that defines the clipping range. This objective says: if the new policy’s probability ratio <span class="arithmatex">\(r_t(\theta)\)</span> stays within <span class="arithmatex">\([1-\epsilon,\,1+\epsilon]\)</span>, we use the normal surrogate <span class="arithmatex">\(r_t \hat{A}_t\)</span>. But if <span class="arithmatex">\(r_t\)</span> tries to go outside this range (meaning the policy probability for an action has changed dramatically), we clip <span class="arithmatex">\(r_t\)</span> to either <span class="arithmatex">\(1+\epsilon\)</span> or <span class="arithmatex">\(1-\epsilon\)</span> before multiplying by <span class="arithmatex">\(\hat{A}_t\)</span>. Effectively, the advantage contribution is capped once the policy deviates too much from the old policy.</p>
+<p>The clipped objective is not exactly the original constrained problem, but it serves a similar purpose: it removes the incentive for the optimizer to push <span class="arithmatex">\(r_t\)</span> outside of <span class="arithmatex">\([1-\epsilon,1+\epsilon]\)</span>. If increasing <span class="arithmatex">\(|\theta|\)</span> further doesn’t increase the objective (because the min() will select the clipped term), then overly large policy changes are discouraged.</p>
+<p>Why Clipping Works: Clipping is a simple heuristic, but it has proven extremely effective:</p>
+<ul>
+<li>
+<p>It enforces a soft trust region by preventing extreme updates for any single state-action probability. The policy can still change, but not so much that any one probability ratio blows up.</p>
+</li>
+<li>
+<p>It avoids the complexity of solving a constrained optimization or computing second-order derivatives – we can just do standard SGD on <span class="arithmatex">\(L^{CLIP}(\theta)\)</span>.</p>
+</li>
+<li>
+<p>It keeps importance sampling ratios near 1, which means the algorithm can safely perform multiple epochs of updates on the same batch of data without the estimates drifting too far. This directly improves sample efficiency (unlike vanilla policy gradient, PPO typically updates each batch for several epochs).</p>
+</li>
+</ul>
+<h4 id="ppo-clipped-algorithm">PPO (Clipped) Algorithm<a class="headerlink" href="#ppo-clipped-algorithm" title="Permanent link">¶</a></h4>
+<p>1: Input: initial policy parameters <span class="arithmatex">\(\theta_0\)</span>, clipping threshold <span class="arithmatex">\(\epsilon\)</span><br>
+2: for <span class="arithmatex">\(k = 0, 1, 2, \ldots\)</span> do<br>
+3: <span class="arithmatex">\(\quad\)</span> Collect a set of partial trajectories <span class="arithmatex">\(\mathcal{D}_k\)</span> using policy <span class="arithmatex">\(\pi_k = \pi(\theta_k)\)</span><br>
+4: <span class="arithmatex">\(\quad\)</span> Estimate advantages <span class="arithmatex">\(\hat{A}^{\,t}_k\)</span> using any advantage estimation algorithm (e.g., GAE)<br>
+5: <span class="arithmatex">\(\quad\)</span> Define the clipped surrogate objective<br>
+<span class="arithmatex">\(\quad\quad\)</span><br>
+<script type="math/tex; mode=display">
+\mathcal{L}^{\text{CLIP}}_{\theta_k}(\theta)
+= 
+\mathbb{E}_{\tau \sim \pi_{\theta_k}}
+\left[
+\sum_{t=0}^{T}
+\min\!\left(
+r_t(\theta)\,\hat{A}^t_k,\;
+\operatorname{clip}\!\left(r_t(\theta),\, 1-\epsilon,\, 1+\epsilon\right)\hat{A}^t_k
+\right)
+\right]
+</script>
+6: <span class="arithmatex">\(\quad\)</span> Update policy parameters with several epochs of minibatch SGD to approximately maximize <span class="arithmatex">\(\mathcal{L}^{\text{CLIP}}_{\theta_k}(\theta)\)</span><br>
+7: <span class="arithmatex">\(\quad\)</span> Set <span class="arithmatex">\(\theta_{k+1}\)</span> to the resulting parameters<br>
+8: end for  </p>
+<p>In practice, PPO with clipping has become one of the most widely used RL algorithms because it strikes a good balance between performance and simplicity. It is relatively easy to implement (compared to TRPO) and has been found to be robust across many tasks and hyperparameters. While it doesn’t guarantee monotonic improvement in theory, in practice it achieves stable training behavior very similar to TRPO.</p>
+<p>In modern practice, PPO is the dominant choice for policy optimization in deep RL, due to its relative simplicity and strong performance across many environments. TRPO is still important conceptually (and sometimes used in scenarios where theoretical guarantees are desired), but PPO’s convenience usually wins out.</p>
+<h2 id="putting-it-together-sample-efficiency-stability-and-monotonic-improvement">Putting It Together: Sample Efficiency, Stability, and Monotonic Improvement<a class="headerlink" href="#putting-it-together-sample-efficiency-stability-and-monotonic-improvement" title="Permanent link">¶</a></h2>
+<p>The advances covered in this chapter are often used together in state-of-the-art algorithms:</p>
+<ul>
+<li>
+<p>Generalized Advantage Estimation (GAE) provides high-quality advantage estimates that significantly reduce variance without too much bias. This means we can get away with smaller batch sizes or fewer episodes to get a good learning signal – improving sample efficiency.</p>
+</li>
+<li>
+<p>Trust-region update rules (TRPO/PPO) ensure that each policy update is safe and stable – the policy doesn’t change erratically, preventing the kind of catastrophic drops in reward that naive policy gradients can suffer. By keeping policy changes small (via KL constraints or clipping), these methods enable multiple updates on the same batch of data (improving data efficiency) and maintain policy monotonicity, i.e. each update is expected to improve or at least not significantly degrade performance.</p>
+</li>
+<li>
+<p>In practice, an algorithm like PPO with GAE is an actor–critic method that uses all these ideas: an actor policy updated with a clipped surrogate objective (making updates stable), a critic to approximate <span class="arithmatex">\(V(s)\)</span> (enabling advantage estimation), GAE to compute advantages (trading off bias/variance), and typically multiple gradient epochs per batch to squeeze more learning out of each sample. This combination has proven remarkably successful in domains from simulated control tasks to games.</p>
+</li>
+</ul>
+<p>By building on the foundational policy gradient framework and addressing its shortcomings, GAE and trust-region approaches have made deep reinforcement learning much more practical and reliable. They illustrate how theoretical insights (performance bounds, policy geometry) and practical tricks (advantage normalization, clipping) come together to yield algorithms that can solve challenging RL problems while using reasonable amounts of training data and maintaining stability throughout learning. Each component – be it advantage estimation or constrained updates – plays a role in ensuring that learning is as efficient, stable, and monotonic as possible. Together, they represent the state-of-the-art toolkit for policy optimization in reinforcement learning.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Key Idea</th>
+<th>Pros</th>
+<th>Cons</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>REINFORCE</td>
+<td>MC return-based policy gradient</td>
+<td>Simple, unbiased</td>
+<td>Very high variance</td>
+</tr>
+<tr>
+<td>Actor–Critic</td>
+<td>TD baseline value function</td>
+<td>More sample-efficient</td>
+<td>Requires critic</td>
+</tr>
+<tr>
+<td>Advantage Actor–Critic</td>
+<td>Uses <span class="arithmatex">\(A(s,a)\)</span> for updates</td>
+<td>Best bias–variance trade</td>
+<td>Needs accurate value est.</td>
+</tr>
+<tr>
+<td>TRPO</td>
+<td>Trust-region with KL constraint</td>
+<td>Strong theory, stable</td>
+<td>Complex, second-order</td>
+</tr>
+<tr>
+<td>PPO</td>
+<td>Clipped/penalized surrogate objective</td>
+<td>Simple, stable, popular</td>
+<td>Heuristic, tuning needed</td>
+</tr>
+</tbody>
+</table>
+<h2 id="mental-map">Mental Map<a class="headerlink" href="#mental-map" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code>                  Advanced Policy Gradient Methods
+     Goal: Fix limitations of vanilla PG (variance, stability, KL control)
+                               │
+                               ▼
+             Core Challenges in Policy Gradient Methods
+       ┌────────────────────────────────────────────────────────┐
+       │ High variance (MC returns)                             │
+       │ Poor sample efficiency (on-policy only)                │
+       │ Sensitive to step size → catastrophic policy collapse  │
+       │ Small θ change ≠ small policy change                   │
+       │ Reusing old data is unstable                           │
+       └────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+                     Variance Reduction (Baselines)
+       ┌────────────────────────────────────────────────────────┐
+       │ Introduce baseline b(s) → subtract expectation         │
+       │ Keeps estimator unbiased                               │
+       │ Good choice: b(s)= V(s) → yields Advantage A(s,a)      │
+       │ Update based on: how much action outperformed expected │
+       └────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+                       Advantage Function A(s,a)
+       ┌────────────────────────────────────────────────────────┐
+       │ A(s,a) = Q(s,a) – V(s)                                 │
+       │ Measures how much BETTER the action was vs average     │
+       │ Positive → increase πθ(a|s); Negative → decrease it    │
+       │ Major variance reduction – foundation of Actor–Critic  │
+       └────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+                         Actor–Critic Framework
+       ┌────────────────────────────────────────────────────────┐
+       │ Actor: policy πθ(a|s)                                  │
+       │ Critic: value function V(s;w) estimates baseline       │
+       │ TD error δt reduces variance (bootstrapping)           │
+       │ Faster, more sample-efficient than REINFORCE           │
+       └────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+                     Target Estimation for the Critic
+       ┌────────────────────────────┬────────────────────────────┐
+       │ Monte Carlo (∞-step)       │  TD (1-step)               │
+       │ + Unbiased                 │  + Low variance            │
+       │ – High variance            │  – Biased                  │
+       ├────────────────────────────┴────────────────────────────┤
+       │ n-Step Returns: Blend of TD and MC                      │
+       │ Control bias–variance by choosing n                     │
+       │ Larger n → MC-like; smaller n → TD-like                 │
+       └─────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+             Fundamental Problems with Vanilla Policy Gradient
+       ┌────────────────────────────────────────────────────────┐
+       │ Uses each batch for ONE gradient step (on-policy)      │
+       │ Step size is unstable → huge performance collapse      │
+       │ Small changes in θ → large unintended policy changes   │
+       │ Need mechanism to limit POLICY CHANGE, not θ change    │
+       └────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+            Safe Policy Improvement Theory → TRPO &amp; PPO
+       ┌────────────────────────────────────────────────────────┐
+       │ Policy Performance Difference Lemma                    │
+       │   J(π') − J(π) = Eπ' [Aπ(s,a)]                         │
+       │ KL Divergence as policy distance metric                │
+       │   D_KL(π'||π) small → safe update                      │
+       │ Monotonic Improvement Bound                            │
+       │   Lower bound on J(π') using surrogate loss Lπ(π')     │
+       └────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+                   Surrogate Objective for Safe Updates
+       ┌────────────────────────────────────────────────────────┐
+       │ Lπ(π') = E[ (π'(a|s)/π(a|s)) * Aπ(s,a) ]               │
+       │ Importance sampling + KL regularization                │
+       │ Foundation of Trust-Region Policy Optimization (TRPO)  │
+       └────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+              Proximal Policy Optimization (PPO) – Key Ideas
+       ┌────────────────────────────┬────────────────────────────┐
+       │ PPO-KL Penalty             │ PPO-Clipped Objective      │
+       │ Adds β·KL to loss          │ Clips ratio r_t(θ) to      │
+       │ Adjust β adaptively        │ [1−ε, 1+ε] to prevent      │
+       │ Prevents large updates     │ destructive policy jumps   │
+       └────────────────────────────┴────────────────────────────┘
+                               │
+                               ▼
+                         PPO Algorithm Summary
+       ┌────────────────────────────────────────────────────────┐
+       │ 1. Collect trajectories from old policy                │
+       │ 2. Estimate advantages Â_t (GAE, TD, etc.)            │
+       │ 3. Optimize clipped surrogate for many epochs          │
+       │ 4. Update parameters safely                            │
+       └────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+                          Final Outcome (Chapter 6)
+       ┌────────────────────────────────────────────────────────┐
+       │ Stable and efficient policy optimization               │
+       │ Reuse data safely across multiple updates              │
+       │ Avoid catastrophic policy collapse                     │
+       │ Foundation of modern deep RL algorithms                │
+       │ (PPO, TRPO, A3C, IMPALA, SAC, etc.)                    │
+       └────────────────────────────────────────────────────────┘
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../6_pg2/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 6. Policy Gradient Variance Reduction and Actor-Critic">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                6. Policy Gradient Variance Reduction and Actor-Critic
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../8_imitation_learning/" class="md-footer__link md-footer__link--next" aria-label="Next: 8. Imitation Learning">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                8. Imitation Learning
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      © 2025 Salman Khan — Educational Use Only
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/SalK91/reinforcement_learning" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.indexes", "navigation.path", "navigation.top", "navigation.footer", "toc.follow", "content.code.copy", "content.action.edit", "content.action.view", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="../../js/print-site.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

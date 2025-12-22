@@ -1,0 +1,1477 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Structured lecture notes on Reinforcement Learning.">
+      
+      
+        <meta name="author" content="Salman Khan">
+      
+      
+        <link rel="canonical" href="https://salk91.github.io/reinforcement_learning/reinforcement/10_offline_rl/">
+      
+      
+        <link rel="prev" href="../9_rlhf/">
+      
+      
+        <link rel="next" href="../11_fast_rl/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.20">
+    
+    
+      
+        <title>10. Offline Reinforcement Learning - Reinforcement Learning Lecture Notes</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.e53b48f4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather:300,300i,400,400i,700,700i%7CFira+Code:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Merriweather";--md-code-font:"Fira Code"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/print-site.css">
+    
+      <link rel="stylesheet" href="../../css/print-site-material.css">
+    
+      <link rel="stylesheet" href="../../styles/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-10-batch-offline-rl-policy-evaluation-optimization" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Reinforcement Learning Lecture Notes" class="md-header__button md-logo" aria-label="Reinforcement Learning Lecture Notes" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Reinforcement Learning Lecture Notes
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              10. Offline Reinforcement Learning
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="cyan" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="cyan" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m3.55 19.09 1.41 1.41 1.8-1.79-1.42-1.42M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6c0-3.32-2.69-6-6-6m8 7h3v-2h-3m-2.76 7.71 1.8 1.79 1.41-1.41-1.79-1.8M20.45 5l-1.41-1.4-1.8 1.79 1.42 1.42M13 1h-2v3h2M6.76 5.39 4.96 3.6 3.55 5l1.79 1.81zM1 13h3v-2H1m12 9h-2v3h2"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/SalK91/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../1_intro/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reinforcement Learning
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../print_page/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Print/PDF
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Reinforcement Learning Lecture Notes" class="md-nav__button md-logo" aria-label="Reinforcement Learning Lecture Notes" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    Reinforcement Learning Lecture Notes
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/SalK91/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Reinforcement Learning
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Reinforcement Learning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1_intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    1. Introduction to Reinforcement Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2_mdp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    2. MDPs &amp; Dynamic Programming
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3_modelfree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    3. Model-Free Prediction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../4_model_free_control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    4. Model-Free Control
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../5_policy_gradient/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    5. Policy Gradient Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../6_pg2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    6. Policy Gradient Variance Reduction and Actor-Critic
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../7_gae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    7. Advances in Policy Optimization – GAE, TRPO, and PPO
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../8_imitation_learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    8. Imitation Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../9_rlhf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    9. RLHF
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    10. Offline Reinforcement Learning
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    10. Offline Reinforcement Learning
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#offline-reinforcement-learning-a-different-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      Offline Reinforcement Learning: A Different Approach
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#batch-policy-evaluation-estimating-the-performance-of-a-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Batch Policy Evaluation: Estimating the Performance of a Policy
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-different-vs-dqn" class="md-nav__link">
+    <span class="md-ellipsis">
+      What is different vs DQN?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#offline-policy-learning-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Offline Policy Learning / Optimization
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#challenges-in-offline-policy-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Challenges in Offline Policy Optimization
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mental-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental Map
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11_fast_rl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    11. Data-Efficient Reinforcement Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12_fast_mdps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    12. Fast Reinforcement Learning in MDPs and Generalization
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13_montecarlo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    13. Monte Carlo Tree Search and Planning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14_final/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    14. Summary and Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../print_page/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Print/PDF
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#offline-reinforcement-learning-a-different-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      Offline Reinforcement Learning: A Different Approach
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#batch-policy-evaluation-estimating-the-performance-of-a-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Batch Policy Evaluation: Estimating the Performance of a Policy
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-different-vs-dqn" class="md-nav__link">
+    <span class="md-ellipsis">
+      What is different vs DQN?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#offline-policy-learning-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Offline Policy Learning / Optimization
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#challenges-in-offline-policy-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Challenges in Offline Policy Optimization
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mental-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mental Map
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/SalK91/edit/main/docs/reinforcement/10_offline_rl.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/SalK91/raw/main/docs/reinforcement/10_offline_rl.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"></path></svg>
+    </a>
+  
+
+
+<h1 id="chapter-10-batch-offline-rl-policy-evaluation-optimization">Chapter 10: Batch / Offline RL Policy Evaluation &amp; Optimization<a class="headerlink" href="#chapter-10-batch-offline-rl-policy-evaluation-optimization" title="Permanent link">¶</a></h1>
+<p>Learning from the Past</p>
+<ul>
+<li>Learning from Past Human Demonstrations: Imitation Learning</li>
+<li>Learning from Past Human Preferences: RLHF and DPO</li>
+<li>Learning from Past Decisions and Actions: Offline RL</li>
+</ul>
+<h2 id="offline-reinforcement-learning-a-different-approach">Offline Reinforcement Learning: A Different Approach<a class="headerlink" href="#offline-reinforcement-learning-a-different-approach" title="Permanent link">¶</a></h2>
+<p>Offline Reinforcement Learning allows learning from a fixed dataset of past experiences rather than continuous exploration. The central idea of offline RL is that we can use data generated by any policy (including suboptimal ones) to evaluate and improve a new policy without further interaction with the environment. This can be particularly useful in real-world scenarios where it is expensive or unsafe to explore.</p>
+<p>In settings where exploration is costly, dangerous, or impractical (e.g., healthcare, autonomous driving), we rely on pre-existing datasets to learn the best possible policy. Offline RL is essential in such cases as it enables learning from historical data while avoiding risky interactions with the environment. However, this task is more challenging due to the limited data distribution, which may not cover all relevant state-action pairs for effective learning.</p>
+<blockquote>
+<p>Why Can’t We Just Use Q-Learning?</p>
+<ul>
+<li>Q-learning is an off policy RL algorithm: Can be used with data different than the state--action pairs would visit under the optimal Q state action values</li>
+<li>But deadly triad of bootstrapping, function approximation and off
+policy, and can fail</li>
+</ul>
+</blockquote>
+<h2 id="batch-policy-evaluation-estimating-the-performance-of-a-policy">Batch Policy Evaluation: Estimating the Performance of a Policy<a class="headerlink" href="#batch-policy-evaluation-estimating-the-performance-of-a-policy" title="Permanent link">¶</a></h2>
+<p>Offline RL starts with batch policy evaluation, where we aim to estimate the performance of a given policy without interacting with the environment.</p>
+<ol>
+<li>
+<p>Using Models: A model-based approach uses a learned model of the environment to simulate what would have happened if the policy had been followed. The model learns both the reward and transition dynamics from the data.</p>
+<p>Specifically, it learns two main components from data: a reward function <span class="arithmatex">\(\hat{r}(s,a)\)</span> and transition dynamics <span class="arithmatex">\(\hat{P}(s' \mid s,a)\)</span>. These are learned via supervised learning on the offline dataset <span class="arithmatex">\(D\)</span> of transitions collected by some behavior policy <span class="arithmatex">\(\pi_b\)</span>. For example, <span class="arithmatex">\(\hat{r}(s,a)\)</span> can be trained by regression to predict the observed reward given state <span class="arithmatex">\(s\)</span> and action <span class="arithmatex">\(a\)</span>, and <span class="arithmatex">\(\hat{P}(s' \mid s,a)\)</span> can be fit to predict the next-state <span class="arithmatex">\(s'\)</span> (or a distribution over next states) given the current state and action. In practice, one might maximize the likelihood of observed transitions in <span class="arithmatex">\(D\)</span> under the model or minimize prediction error. In essence, the agent treats the batch data as supervised examples to “learn the environment’s rules". Once learned, this model <span class="arithmatex">\(\hat{\mathcal{M}} = (\hat{P}, \hat{r})\)</span> serves as a proxy for the real environment, which we can use for evaluating any policy <span class="arithmatex">\(\pi\)</span> without further real experience.</p>
+<p>It’s important to note the limitations of the learned model at this stage. The offline dataset may cover only a subset of the state-action space (the ones the behavior policy visited). The learned dynamics <span class="arithmatex">\(\hat{P}\)</span> will be reliable only in regions covered by <span class="arithmatex">\(D\)</span>; if <span class="arithmatex">\(\pi\)</span> later tries unfamiliar states or actions, the model will be forced to extrapolate, potentially generating highly biased predictions (the dreaded extrapolation error or model hallucination).</p>
+<h4 id="algorithmic-outline-offline-policy-evaluation-via-model">Algorithmic Outline - Offline Policy Evaluation via Model:<a class="headerlink" href="#algorithmic-outline-offline-policy-evaluation-via-model" title="Permanent link">¶</a></h4>
+<ol>
+<li>
+<p>Input: offline dataset <span class="arithmatex">\(D\)</span> of transitions (from behavior <span class="arithmatex">\(\pi_b\)</span>), a policy <span class="arithmatex">\(\pi\)</span> to evaluate, discount <span class="arithmatex">\(\gamma\)</span>.</p>
+</li>
+<li>
+<p>Model Learning: Fit <span class="arithmatex">\(\hat{P}(s'|s,a)\)</span> and <span class="arithmatex">\(\hat{r}(s,a)\)</span> using <span class="arithmatex">\(D\)</span> (e.g. maximum likelihood estimation for dynamics, regression for rewards).</p>
+</li>
+<li>
+<p>Policy Evaluation: Initialize <span class="arithmatex">\(V(s)=0\)</span> for all states (or some initial guess).</p>
+</li>
+<li>
+<p>Loop (Bellman backups using <span class="arithmatex">\(\hat{P},\hat{r}\)</span>): For each state <span class="arithmatex">\(s\)</span> in the state space (or a representative set of states):</p>
+</li>
+<li>
+<p>Compute <span class="arithmatex">\(\hat{R}^\pi(s) = \sum_a \pi(a|s)\hat{r}(s,a)\)</span>.</p>
+</li>
+<li>
+<p>Compute <span class="arithmatex">\(V_{\text{new}}(s) = \hat{R}^\pi(s) + \gamma \sum_{s'} \hat{P}^\pi(s'\mid s),V(s')\)</span>.</p>
+</li>
+<li>
+<p>Update <span class="arithmatex">\(V \leftarrow V_{\text{new}}\)</span> and repeat until convergence (the changes in <span class="arithmatex">\(V\)</span> are below a threshold).</p>
+</li>
+<li>
+<p>Output: <span class="arithmatex">\(V(s)\)</span> for states of interest (e.g. the estimated value of <span class="arithmatex">\(\pi\)</span> under the initial state distribution <span class="arithmatex">\(S_0\)</span> can be obtained by <span class="arithmatex">\(\mathbb{E}_{s_0\sim S_0}[V(s_0)]\)</span>).</p>
+</li>
+</ol>
+</li>
+<li>
+<p>Model-Free Methods: In a model-free approach, we evaluate the policy directly based on the observed dataset without using a learned model of the environment. Fitted Q Evaluation (FQE): Uses historical data to estimate the value function of a policy by fitting a Q-function to the data and iterating until convergence.</p>
+<h3 id="algorithm-3-fitted-q-evaluation-fqe-pi-c">Algorithm 3 Fitted Q Evaluation: FQE <span class="arithmatex">\((\pi, c)\)</span><a class="headerlink" href="#algorithm-3-fitted-q-evaluation-fqe-pi-c" title="Permanent link">¶</a></h3>
+<p>Input: Dataset <span class="arithmatex">\(\mathcal{D} = \{(x_i, a_i, x'_i, c_i)\}_{i=1}^n \sim \pi_D\)</span>. Data set here is a bunch of just different tuples of state, action, reward and next state. FQE aims to evaluate a fixed policy <span class="arithmatex">\(\pi\)</span> by learning its Q-function from this offline dataset. The Q-function represents the expected cumulative cost starting from state <span class="arithmatex">\(s_i\)</span>, taking action <span class="arithmatex">\(a_i\)</span>, and then following policy <span class="arithmatex">\(\pi\)</span> thereafter.At each iteration, we construct a Bellman target:</p>
+<div class="arithmatex">\[\tilde{Q}^\pi(s_i, a_i)
+=
+c_i + \gamma V_\theta^\pi(s_{i+1})
+\]</div>
+<p>where</p>
+<div class="arithmatex">\[
+V_\theta^\pi(s_{i+1}) = Q_\theta^\pi(s_{i+1}, \pi(s_{i+1})).
+\]</div>
+<p>The Q-function is parameterized by <span class="arithmatex">\(\theta\)</span> (e.g., a neural network), and is learned by solving a supervised regression problem:</p>
+<div class="arithmatex">\[\arg\min_\theta
+\sum_i
+\Big(
+Q_\theta^\pi(s_i, a_i)
+-
+\tilde{Q}^\pi(s_i, a_i)
+\Big)^2\]</div>
+<p>This procedure is repeated iteratively, yielding an increasingly accurate estimate of the value of policy <span class="arithmatex">\(\pi\)</span> under the data distribution induced by <span class="arithmatex">\(\pi_D\)</span>.</p>
+<p>Function class <span class="arithmatex">\(F\)</span> (Let's assume we use a DNN for F). Policy </p>
+<p><span class="arithmatex">\(\pi\)</span> to be evaluated.
+1: Initialize <span class="arithmatex">\(Q_0 \in F\)</span> randomly<br>
+2: for <span class="arithmatex">\(k = 1, 2, \dots, K\)</span> do<br>
+3: <span class="arithmatex">\(\quad\)</span> Compute target <span class="arithmatex">\(y_i = c_i + \gamma Q_{k-1}(x'_i, \pi(x'_i)) \quad \forall i\)</span><br>
+4: <span class="arithmatex">\(\quad\)</span> Build training set <span class="arithmatex">\(\tilde{\mathcal{D}}_k = \{(x_i, a_i), y_i\}_{i=1}^n\)</span><br>
+5: <span class="arithmatex">\(\quad\)</span> Solve a supervised learning problem:<br>
+<script type="math/tex; mode=display">
+Q_k = \arg\min_{f \in F} \frac{1}{n} \sum_{i=1}^n \big(f(x_i, a_i) - y_i\big)^2
+</script>
+<br>
+6: end for<br>
+Output: <span class="arithmatex">\(\hat{C}^\pi(x) = Q_K(x, \pi(x)) \quad \forall x\)</span></p>
+<blockquote>
+<h2 id="what-is-different-vs-dqn">What is different vs DQN?<a class="headerlink" href="#what-is-different-vs-dqn" title="Permanent link">¶</a></h2>
+<p>DQN learns an optimal policy by interacting with the environment, while FQE evaluates a <em>fixed policy</em> using a <em>fixed offline dataset</em>.</p>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>FQE (Fitted Q Evaluation)</th>
+<th>DQN (Deep Q-Network)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Goal</td>
+<td>Policy evaluation</td>
+<td>Policy optimization / control</td>
+</tr>
+<tr>
+<td>Policy</td>
+<td>Fixed target policy <span class="arithmatex">\(\pi\)</span></td>
+<td>Implicitly learned via <span class="arithmatex">\(\max_a Q(s,a)\)</span></td>
+</tr>
+<tr>
+<td>Data</td>
+<td>Offline, fixed dataset <span class="arithmatex">\(\mathcal{D}\)</span></td>
+<td>Online, collected during training</td>
+</tr>
+<tr>
+<td>Bellman target</td>
+<td><span class="arithmatex">\(c + \gamma Q(s', \pi(s'))\)</span></td>
+<td><span class="arithmatex">\(r + \gamma \max_a Q(s', a)\)</span></td>
+</tr>
+<tr>
+<td>Action at next state</td>
+<td>From given policy <span class="arithmatex">\(\pi\)</span></td>
+<td>Greedy over Q-values</td>
+</tr>
+<tr>
+<td>Exploration</td>
+<td>None</td>
+<td>Required (e.g. <span class="arithmatex">\(\epsilon\)</span>-greedy)</td>
+</tr>
+<tr>
+<td>Dataset changes?</td>
+<td>❌ No</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td>Off-policy instability</td>
+<td>Low</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Convergence guarantees</td>
+<td>Yes (tabular / linear)</td>
+<td>No (with function approximation)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="1-no-maximization-bias-in-fqe">1. No maximization bias in FQE<a class="headerlink" href="#1-no-maximization-bias-in-fqe" title="Permanent link">¶</a></h3>
+<ul>
+<li>DQN suffers from overestimation bias</li>
+<li>FQE does pure regression, no bootstrapped max</li>
+</ul>
+<h3 id="2-stability">2. Stability<a class="headerlink" href="#2-stability" title="Permanent link">¶</a></h3>
+<ul>
+<li>FQE ≈ supervised learning  </li>
+<li>DQN ≈ bootstrapped + non-stationary targets</li>
+</ul>
+<h3 id="3-offline-vs-online">3. Offline vs Online<a class="headerlink" href="#3-offline-vs-online" title="Permanent link">¶</a></h3>
+<ul>
+<li>FQE cannot improve the policy  </li>
+<li>DQN must interact with environment</li>
+</ul>
+</blockquote>
+</li>
+<li>
+<p>Importance Sampling:
+    This is a trajectory re-weighting approach that treats the off-policy evaluation as a statistical estimation problem. By weighting each reward in the dataset by the ratio of the probabilities of that trajectory under the target policy vs. the behavior policy (the one that generated the data) , IS provides an unbiased estimator of the target policy’s value – assuming coverage (i.e. the target policy doesn’t go where behavior policy never went). The big drawback is variance: if the policy difference is significant or the horizon is long, importance weights can explode, making estimates very noisy. In practice, vanilla importance sampling is often too high-variance to be useful for long-horizon RL. There are variants like weighted importance sampling, per-decision IS, and doubly robust estimators to mitigate variance at the cost of some bias.</p>
+</li>
+</ol>
+<h2 id="offline-policy-learning-optimization">Offline Policy Learning / Optimization<a class="headerlink" href="#offline-policy-learning-optimization" title="Permanent link">¶</a></h2>
+<p>Once we've evaluated the policy using offline methods, the next step is to optimize the policy based on the evaluation.</p>
+<ol>
+<li>
+<p>Optimization with Model-Free Methods: Offline RL with model-free methods like Fitted Q Iteration (FQI) focuses on directly improving the policy by optimizing the action-value function based on past data. This approach may suffer from inefficiency if the data is sparse or does not adequately represent the true state-action space.</p>
+</li>
+<li>
+<p>Dealing with the Distribution Mismatch: One challenge in offline RL is the distribution shift between the data used to learn the model and the policy we are optimizing. Policies derived from the data may end up performing poorly when deployed due to overfitting to the data distribution.</p>
+</li>
+<li>
+<p>Conservative Batch RL: A solution to the distribution mismatch is pessimistic learning. We assume that areas of the state-action space with little data coverage are likely to lead to suboptimal outcomes and penalize actions from those regions during optimization. This helps to avoid overestimation of the policy's performance in underrepresented areas.</p>
+</li>
+</ol>
+<h2 id="challenges-in-offline-policy-optimization">Challenges in Offline Policy Optimization<a class="headerlink" href="#challenges-in-offline-policy-optimization" title="Permanent link">¶</a></h2>
+<ol>
+<li>
+<p>Overlap Requirement: Offline RL methods often assume that there is sufficient overlap between the behavior policy (the one that collected the data) and the target policy (the one we are optimizing). Without this overlap, the model may fail to generalize well.</p>
+</li>
+<li>
+<p>Model Misspecification: If the dynamics of the environment are not well specified or if the model has errors, the optimization may fail. This is particularly problematic in real-world applications where we may not have access to a perfect model.</p>
+</li>
+<li>
+<p>Pessimistic Approaches: Recent methods in Conservative Offline RL advocate for penalizing regions of the state-action space that have insufficient support in the data. This helps prevent overly optimistic policy performance estimates and ensures safer, more reliable policy learning.</p>
+</li>
+</ol>
+<p>Offline RL provides a valuable framework for learning policies from existing data when exploration is not feasible. By using batch policy evaluation techniques like Importance Sampling, Fitted Q Iteration, and Pessimistic Learning, we can develop policies that perform well even with limited or imperfect data. However, challenges such as distribution mismatch and model misspecification need careful handling to avoid overfitting or biased outcomes.</p>
+<h2 id="mental-map">Mental Map<a class="headerlink" href="#mental-map" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code>                 Offline / Batch Reinforcement Learning
+        Goal: Learn and evaluate policies from fixed historical data
+           when exploration is unsafe, expensive, or impossible
+                                │
+                                ▼
+              Why Online RL Is Not Always Feasible
+ ┌─────────────────────────────────────────────────────────────┐
+ │ Exploration can be dangerous (healthcare, driving, robotics)│
+ │ Data already exists from past decisions                     │
+ │ Real systems cannot reset or freely experiment              │
+ │ We must learn without interacting with the environment      │
+ └─────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+              Offline RL vs Standard RL
+ ┌─────────────────────────────────────────────────────────────┐
+ │ Standard RL:                                                │
+ │  – Collect data with current policy                         │
+ │  – Explore → improve → repeat                               │
+ │                                                             │
+ │ Offline RL:                                                 │
+ │  – Fixed dataset D from behavior policy π_b                 │
+ │  – No new interaction allowed                               │
+ │  – Must generalize only from observed data                  │
+ └─────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+             Why “Just Use Q-Learning” Fails Offline
+ ┌─────────────────────────────────────────────────────────────┐
+ │ Q-learning is off-policy — but not offline-safe             │
+ │ Deadly triad:                                               │
+ │   • Bootstrapping                                           │
+ │   • Function approximation                                  │
+ │   • Off-policy learning                                     │
+ │ Leads to divergence &amp; overestimation                        │
+ │ Especially severe with distribution mismatch                │
+ └─────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+        Offline RL Decomposed into Two Core Problems
+ ┌───────────────────────────────┬─────────────────────────────┐
+ │ 1. Policy Evaluation (OPE)    │ 2. Policy Optimization      │
+ │    “How good is this policy?” │    “How can we improve it?” │
+ │    Without running it         │    Without new data         │
+ └───────────────────────────────┴─────────────────────────────┘
+                                │
+                                ▼
+            Batch / Offline Policy Evaluation (OPE)
+ ┌─────────────────────────────────────────────────────────────┐
+ │ Estimate V^π or J(π) using only dataset D                   │
+ │ Three major approaches:                                     │
+ │  1. Model-based evaluation                                  │
+ │  2. Model-free evaluation (FQE)                             │
+ │  3. Importance Sampling                                     │
+ └─────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+        1. Model-Based Offline Policy Evaluation
+ ┌─────────────────────────────────────────────────────────────┐
+ │ Learn a model from data:                                    │
+ │   • Reward model: r̂(s,a)                                    │
+ │   • Transition model: P̂(s'|s,a)                             │
+ │ Treat batch data as supervised learning                     │
+ │ Then simulate policy π inside learned model                 │
+ │ Use Bellman backups on (P̂, r̂)                               │
+ └─────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+        Model-Based OPE: Key Limitation
+ ┌─────────────────────────────────────────────────────────────┐
+ │ Model is only reliable where data exists                    │
+ │ Policy visiting unseen states/actions → extrapolation error │
+ │ Model hallucination → highly biased value estimates         │
+ └─────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+        2. Model-Free Evaluation: Fitted Q Evaluation (FQE)
+ ┌─────────────────────────────────────────────────────────────┐
+ │ Evaluate a *fixed policy* π                                 │
+ │ Learn Q^π(s,a) from offline data via regression             │
+ │ Bellman target:                                             │
+ │   y = c + γ Q(s', π(s'))                                    │
+ │ Pure supervised learning loop                               │
+ │ Stable compared to Q-learning / DQN                         │
+ └─────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+             FQE vs DQN (Key Insight)
+ ┌─────────────────────────────┬─────────────────────────────┐
+ │ DQN                         │ FQE                         │
+ │ Learns optimal policy       │ Evaluates fixed policy      │
+ │ Uses max over actions       │ Uses given π(s')            │
+ │ Online data collection      │ Fully offline               │
+ │ Overestimation bias         │ No max → more stable        │
+ └─────────────────────────────┴─────────────────────────────┘
+                                │
+                                ▼
+        3. Importance Sampling (IS) Evaluation
+ ┌─────────────────────────────────────────────────────────────┐
+ │ Treat OPE as statistical estimation                         │
+ │ Reweight trajectories by π / π_b                            │
+ │ Unbiased if coverage holds                                  │
+ │ Severe variance for long horizons or policy mismatch        │
+ │ Variants:                                                   │
+ │   • Per-decision IS                                         │
+ │   • Weighted IS                                             │
+ │   • Doubly robust estimators                                │
+ └─────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+            Offline Policy Optimization
+ ┌─────────────────────────────────────────────────────────────┐
+ │ Goal: improve policy using only dataset D                   │
+ │ Model-free: Fitted Q Iteration (FQI)                        │
+ │ Model-based: planning inside learned model                  │
+ │ Core challenge: distribution shift                          │
+ └─────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+        The Central Problem: Distribution Mismatch
+ ┌─────────────────────────────────────────────────────────────┐
+ │ Learned policy chooses actions unseen in data               │
+ │ Q-values extrapolate → overly optimistic                    │
+ │ Performance collapses at deployment                         │
+ │ Offline RL ≠ just off-policy RL                             │
+ └─────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+        Conservative / Pessimistic Offline RL
+ ┌─────────────────────────────────────────────────────────────┐
+ │ Assume unknown actions are risky                            │
+ │ Penalize state-action pairs with low data support           │
+ │ Prefer policies close to behavior policy                    │
+ │ Examples (conceptually):                                    │
+ │   • Conservative Q-Learning (CQL)                           │
+ │   • Regularization toward π_b                               │
+ └─────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+              Key Challenges in Offline RL
+ ┌─────────────────────────────────────────────────────────────┐
+ │ Coverage / overlap requirement                              │
+ │ Model misspecification                                      │
+ │ Value overestimation                                        │
+ │ Bias–variance tradeoffs                                     │
+ │ Safety vs optimality                                        │
+ └─────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+               Final Takeaway (Chapter Summary)
+ ┌─────────────────────────────────────────────────────────────┐
+ │ Offline RL learns entirely from past experience             │
+ │ Policy evaluation is foundational before optimization       │
+ │ Model-based, FQE, and IS provide OPE tools                  │
+ │ Main risk: distribution shift &amp; extrapolation               │
+ │ Conservative methods trade performance for safety           │
+ │ Offline RL is essential for real-world decision systems     │
+ └─────────────────────────────────────────────────────────────┘
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../9_rlhf/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 9. RLHF">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                9. RLHF
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../11_fast_rl/" class="md-footer__link md-footer__link--next" aria-label="Next: 11. Data-Efficient Reinforcement Learning">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                11. Data-Efficient Reinforcement Learning
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      © 2025 Salman Khan — Educational Use Only
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/SalK91/reinforcement_learning" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.indexes", "navigation.path", "navigation.top", "navigation.footer", "toc.follow", "content.code.copy", "content.action.edit", "content.action.view", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="../../js/print-site.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

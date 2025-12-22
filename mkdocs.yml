@@ -1,0 +1,131 @@
+# ==========================================================
+# Project Information
+# ==========================================================
+site_name: Reinforcement Learning Lecture Notes
+site_description: "Structured lecture notes on Reinforcement Learning."
+site_author: "Salman Khan"
+repo_url: "https://github.com/SalK91/"
+edit_uri: edit/main/docs/
+repo_name: "GitHub"
+site_url: "https://salk91.github.io/reinforcement_learning"
+copyright: "© 2025 Salman Khan — Educational Use Only"
+
+# ==========================================================
+# Theme Configuration (Material)
+# ==========================================================
+theme:
+  name: material
+  language: en
+
+  
+
+  # ---- Color Palette ----
+  palette:
+    - scheme: default   # light academic background (DEFAULT)
+      primary: indigo
+      accent: cyan
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+
+    - scheme: slate     # dark mode
+      primary: indigo
+      accent: cyan
+      toggle:
+        icon: material/white-balance-sunny
+        name: Switch to light mode
+
+
+  # ---- Fonts ----
+  font:
+    text: "Merriweather"
+    code: "Fira Code"
+
+  # ---- Features ----
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - navigation.path
+    - navigation.top
+    - navigation.footer
+    - toc.follow
+    - content.code.copy
+    - content.action.edit
+    - content.action.view
+    - search.suggest
+    - search.highlight
+
+
+# ==========================================================
+# Plugins
+# ==========================================================
+plugins:
+  - search
+  - autorefs
+  - glightbox       # image lightbox support
+  - mkdocs-jupyter
+  - print-site:
+      add_to_navigation: true
+      print_page_title: "Print/PDF"
+      include_nav: false
+      include_footer: true
+      
+
+# ==========================================================
+# Markdown Extensions
+# ==========================================================
+markdown_extensions:
+  - admonition
+  - footnotes
+  - def_list
+  - attr_list
+  - mdx_math:
+      enable_dollar_delimiter: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.arithmatex:
+      generic: true
+  - toc:
+      permalink: true
+      toc_depth: 2   # only top-level headings in sidebar
+
+# ==========================================================
+# Extra JavaScript and Styling
+# ==========================================================
+extra_javascript:
+  - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+
+extra_css:
+  - styles/extra.css
+
+# ==========================================================
+# Footer and Social Links
+# ==========================================================
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/SalK91/reinforcement_learning
+  generator: false
+
+# ==========================================================
+# Navigation
+# ==========================================================
+nav:
+  - Home: "index.md"
+  - Reinforcement Learning:
+      - 1. Introduction to Reinforcement Learning: "reinforcement/1_intro.md"
+      - 2. MDPs & Dynamic Programming: "reinforcement/2_mdp.md"
+      - 3. Model-Free Prediction: "reinforcement/3_modelfree.md"
+      - 4. Model-Free Control: "reinforcement/4_model_free_control.md"
+      - 5. Policy Gradient Methods: "reinforcement/5_policy_gradient.md"
+      - 6. Policy Gradient Variance Reduction and Actor-Critic: "reinforcement/6_pg2.md"
+      - 7. Advances in Policy Optimization – GAE, TRPO, and PPO: "reinforcement/7_gae.md"
+      - 8. Imitation Learning: "reinforcement/8_imitation_learning.md"
+      - 9. RLHF: "reinforcement/9_rlhf.md"
+      - 10. Offline Reinforcement Learning: "reinforcement/10_offline_rl.md"
+      - 11. Data-Efficient Reinforcement Learning: "reinforcement/11_fast_rl.md"
+      - 12. Fast Reinforcement Learning in MDPs and Generalization: "reinforcement/12_fast_mdps.md"
+      - 13. Monte Carlo Tree Search and Planning: "reinforcement/13_montecarlo.md"
+      - 14. Summary and Overview: "reinforcement/14_final.md"

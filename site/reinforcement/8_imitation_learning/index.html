@@ -1,0 +1,1455 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Structured lecture notes on Reinforcement Learning.">
+      
+      
+        <meta name="author" content="Salman Khan">
+      
+      
+        <link rel="canonical" href="https://salk91.github.io/reinforcement_learning/reinforcement/8_imitation_learning/">
+      
+      
+        <link rel="prev" href="../7_gae/">
+      
+      
+        <link rel="next" href="../9_rlhf/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.20">
+    
+    
+      
+        <title>8. Imitation Learning - Reinforcement Learning Lecture Notes</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.e53b48f4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather:300,300i,400,400i,700,700i%7CFira+Code:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Merriweather";--md-code-font:"Fira Code"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/print-site.css">
+    
+      <link rel="stylesheet" href="../../css/print-site-material.css">
+    
+      <link rel="stylesheet" href="../../styles/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-8-imitation-learning" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Reinforcement Learning Lecture Notes" class="md-header__button md-logo" aria-label="Reinforcement Learning Lecture Notes" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Reinforcement Learning Lecture Notes
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              8. Imitation Learning
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="cyan" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="cyan" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m3.55 19.09 1.41 1.41 1.8-1.79-1.42-1.42M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6c0-3.32-2.69-6-6-6m8 7h3v-2h-3m-2.76 7.71 1.8 1.79 1.41-1.41-1.79-1.8M20.45 5l-1.41-1.4-1.8 1.79 1.42 1.42M13 1h-2v3h2M6.76 5.39 4.96 3.6 3.55 5l1.79 1.81zM1 13h3v-2H1m12 9h-2v3h2"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/SalK91/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../1_intro/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reinforcement Learning
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../print_page/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Print/PDF
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Reinforcement Learning Lecture Notes" class="md-nav__button md-logo" aria-label="Reinforcement Learning Lecture Notes" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    Reinforcement Learning Lecture Notes
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/SalK91/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Reinforcement Learning
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Reinforcement Learning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1_intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    1. Introduction to Reinforcement Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2_mdp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    2. MDPs &amp; Dynamic Programming
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3_modelfree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    3. Model-Free Prediction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../4_model_free_control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    4. Model-Free Control
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../5_policy_gradient/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    5. Policy Gradient Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../6_pg2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    6. Policy Gradient Variance Reduction and Actor-Critic
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../7_gae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    7. Advances in Policy Optimization – GAE, TRPO, and PPO
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    8. Imitation Learning
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    8. Imitation Learning
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#motivation-the-case-for-learning-from-demonstrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Motivation: The Case for Learning from Demonstrations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#imitation-learning-problem-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Imitation Learning Problem Setup
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-behavioral-cloning-learning-by-supervised-imitation" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Behavioral Cloning: Learning by Supervised Imitation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inverse-reinforcement-learning-learning-the-why" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inverse Reinforcement Learning: Learning the "Why"
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maximum-entropy-inverse-rl-algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Maximum Entropy Inverse RL Algorithm
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apprenticeship-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      Apprenticeship Learning
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#imitation-learning-in-the-rl-landscape" class="md-nav__link">
+    <span class="md-ellipsis">
+      Imitation Learning in the RL Landscape
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../9_rlhf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    9. RLHF
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10_offline_rl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    10. Offline Reinforcement Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11_fast_rl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    11. Data-Efficient Reinforcement Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12_fast_mdps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    12. Fast Reinforcement Learning in MDPs and Generalization
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13_montecarlo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    13. Monte Carlo Tree Search and Planning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14_final/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    14. Summary and Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../print_page/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Print/PDF
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#motivation-the-case-for-learning-from-demonstrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Motivation: The Case for Learning from Demonstrations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#imitation-learning-problem-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Imitation Learning Problem Setup
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-behavioral-cloning-learning-by-supervised-imitation" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Behavioral Cloning: Learning by Supervised Imitation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inverse-reinforcement-learning-learning-the-why" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inverse Reinforcement Learning: Learning the "Why"
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maximum-entropy-inverse-rl-algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Maximum Entropy Inverse RL Algorithm
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apprenticeship-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      Apprenticeship Learning
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#imitation-learning-in-the-rl-landscape" class="md-nav__link">
+    <span class="md-ellipsis">
+      Imitation Learning in the RL Landscape
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/SalK91/edit/main/docs/reinforcement/8_imitation_learning.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/SalK91/raw/main/docs/reinforcement/8_imitation_learning.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"></path></svg>
+    </a>
+  
+
+
+<h1 id="chapter-8-imitation-learning">Chapter 8: Imitation Learning<a class="headerlink" href="#chapter-8-imitation-learning" title="Permanent link">¶</a></h1>
+<p>In previous chapters, we focused on reinforcement learning with explicit reward signals guiding the agent's behavior. We assumed that a well-defined reward function <span class="arithmatex">\(R(s,a)\)</span> was provided as part of the MDP, and the agent’s goal was to learn a policy that maximizes cumulative reward. But what if specifying the reward is difficult or the agent cannot safely explore to learn from reward? Imitation Learning (IL) addresses these scenarios by leveraging expert demonstrations instead of explicit rewards.</p>
+<p>Imitation Learning allows an agent to learn how to act by mimicking an expert’s behavior, rather than by maximizing a hand-crafted reward.</p>
+<h2 id="motivation-the-case-for-learning-from-demonstrations">Motivation: The Case for Learning from Demonstrations<a class="headerlink" href="#motivation-the-case-for-learning-from-demonstrations" title="Permanent link">¶</a></h2>
+<p>Designing a reward function that truly captures the desired behavior can be extremely challenging. A misspecified reward can lead to unintended behaviors (reward hacking) or require exhaustive tuning. Even with a good reward, some environments present sparse rewards (e.g. only a success/failure signal at the very end of an episode) – making pure trial-and-error learning inefficient. In other cases, unsafe exploration is a concern: letting an agent freely explore (as classic RL would) could be dangerous or costly (imagine a self-driving car learning by crashing to discover that crashing is bad).</p>
+<p>However, in many of these settings expert behavior is available: we might have logs of human drivers driving safely, or demonstrations of a robot performing the task. Imitation Learning leverages this data. Instead of specifying what to do via a reward function, we show the agent how to do it via example trajectories. The agent's objective is then to imitate the expert as closely as possible.</p>
+<p>This paradigm contrasts with reward-based RL in key ways:</p>
+<ul>
+<li>
+<p>Reward-Based RL: The agent explores and learns by trial-and-error, guided by a numeric reward signal for feedback. It requires careful reward design and often extensive exploration.</p>
+</li>
+<li>
+<p>Imitation Learning: The agent learns from demonstrations of the desired behavior, treating the expert’s actions as ground truth. No explicit reward is needed to train; learning is driven by matching the expert's behavior.</p>
+</li>
+</ul>
+<p>By learning from an expert, IL can produce competent policies much faster and safer in these scenarios. It essentially sidesteps the credit assignment problem of RL (because the "right" action is directly provided by the expert) and avoids dangerous exploration. In domains like autonomous driving, robotics, or any task where a human can demonstrate the skill, IL offers a powerful shortcut to get an agent up to a reasonable performance.</p>
+<h2 id="imitation-learning-problem-setup">Imitation Learning Problem Setup<a class="headerlink" href="#imitation-learning-problem-setup" title="Permanent link">¶</a></h2>
+<p>Formally, we can describe the imitation learning scenario using the same environment structure as an MDP <span class="arithmatex">\((S, A, P, R, \gamma)\)</span> except that the reward function <span class="arithmatex">\(R\)</span> is unknown or not used. The agent still has a state space <span class="arithmatex">\(S\)</span>, an action space <span class="arithmatex">\(A\)</span>, and the environment transition dynamics <span class="arithmatex">\(P(s' \mid s, a)\)</span>. What we do have, instead of <span class="arithmatex">\(R\)</span>, is access to expert demonstrations. An expert (which could be a human or a pre-trained optimal agent) provides example trajectories:</p>
+<div class="arithmatex">\[
+\tau_E = (s_0, a_0, s_1, a_1, \dots , s_T)
+\]</div>
+<p>collected by following the expert’s policy <span class="arithmatex">\(\pi_E\)</span> in the environment. We may have a dataset <span class="arithmatex">\(D\)</span> of these expert trajectories (or simply a set of state-action pairs drawn from expert behavior). The key point is that in IL, the agent does not receive numeric rewards from the environment. Instead, success is measured by how well the agent’s behavior matches the expert’s behavior.</p>
+<p>The goal of imitation learning can be stated as: find a policy <span class="arithmatex">\(\pi\)</span> for the agent that reproduces the expert's behavior (and ideally, achieves similar performance on the task). If the expert is optimal or highly skilled, we hope <span class="arithmatex">\(\pi\)</span> will achieve near-optimal results as well. This is an alternative path to finding a good policy without ever specifying a reward function explicitly or performing unguided exploration.</p>
+<p>(If we imagine there was some true but unknown reward <span class="arithmatex">\(R\)</span> the expert is optimizing, then ideally <span class="arithmatex">\(\pi\)</span> should perform nearly as well as <span class="arithmatex">\(\pi_E\)</span> on that reward. IL attempts to reach that outcome via demonstrations rather than explicit reward feedback.)</p>
+<h2 id="3-behavioral-cloning-learning-by-supervised-imitation">3. Behavioral Cloning: Learning by Supervised Imitation<a class="headerlink" href="#3-behavioral-cloning-learning-by-supervised-imitation" title="Permanent link">¶</a></h2>
+<p>The most direct approach to imitation learning is Behavioral Cloning. Behavioral cloning treats imitation as a pure supervised learning problem: we train a policy to map states to the expert’s actions, using the expert demonstrations as labeled examples. In essence, the agent "clones" the expert's behavior by learning to predict the expert's action in any given state.</p>
+<blockquote>
+<p>BC: Learn state to action mappings using expert demonstrations.</p>
+</blockquote>
+<p>In practice, we parameterize a policy <span class="arithmatex">\(\pi_\theta(a\mid s)\)</span> (e.g. a neural network with parameters <span class="arithmatex">\(\theta\)</span>) and adjust <span class="arithmatex">\(\theta\)</span> so that <span class="arithmatex">\(\pi_\theta(\cdot\mid s)\)</span> is as close as possible to the expert’s action choice in state <span class="arithmatex">\(s\)</span>. We define a loss function on the dataset of state-action pairs. For example:</p>
+<ul>
+<li>Discrete actions: Use cross-entropy (negative log-likelihood) of the expert’s action.</li>
+</ul>
+<div class="arithmatex">\[L(\theta) = - \mathbb{E}_{(s,a)\sim D}\left[ \log \pi_{\theta}(a \mid s) \right]\]</div>
+<ul>
+<li>Continuous actions: Use mean squared error (regression loss).</li>
+</ul>
+<div class="arithmatex">\[L(\theta) = \mathbb{E}_{(s,a)\sim D} \left[ \left( \pi_\theta(s) - a \right)^2 \right]\]</div>
+<p>Minimizing these losses drives the policy to imitate the expert decisions on the training set.</p>
+<p>Training a behavioral cloning agent typically involves three steps:</p>
+<ol>
+<li>
+<p>Collect demonstrations: Gather a dataset <span class="arithmatex">\(D = {(s_i, a_i)}\)</span> of expert state-action examples by observing the expert <span class="arithmatex">\(\pi_E\)</span> in the environment.</p>
+</li>
+<li>
+<p>Supervised learning on <span class="arithmatex">\((s, a)\)</span> pairs: Choose a policy representation for <span class="arithmatex">\(\pi_\theta\)</span> and use the collected data to adjust <span class="arithmatex">\(\theta\)</span>. For each example <span class="arithmatex">\((s_i, a_i)\)</span>, we update <span class="arithmatex">\(\pi_\theta\)</span> to reduce the error between its prediction <span class="arithmatex">\(\pi_\theta(s_i)\)</span> and the expert’s action <span class="arithmatex">\(a_i\)</span>. (For instance, if actions are discrete, we increase the probability <span class="arithmatex">\(\pi_\theta(a_i \mid s_i)\)</span> for the expert’s action; if continuous, we move <span class="arithmatex">\(\pi_\theta(s_i)\)</span> closer to <span class="arithmatex">\(a_i\)</span> in value.)</p>
+</li>
+<li>
+<p>Deployment: Once the policy is trained (approximating <span class="arithmatex">\(\pi_E\)</span>), we fix <span class="arithmatex">\(\theta\)</span>. The agent then acts autonomously: at each state <span class="arithmatex">\(s\)</span>, it outputs <span class="arithmatex">\(a = \pi_\theta(s)\)</span> as its action. Ideally, this learned policy will behave similarly to the expert in the environment.</p>
+</li>
+</ol>
+<p>If the expert demonstrations are representative of the situations the agent will face, behavioral cloning can yield a policy that mimics the expert’s behavior effectively. BC has some clear advantages:</p>
+<ul>
+<li>
+<p>Simplicity: It reduces policy learning to standard supervised learning, for which many stable algorithms and optimizations exist.</p>
+</li>
+<li>
+<p>Offline training: The model can be trained entirely from pre-recorded expert data, without requiring interactive environment feedback. This makes it data-efficient in terms of environment interactions.</p>
+</li>
+<li>
+<p>Safety: No random exploration is needed. The agent never tries highly suboptimal actions during training, since it always learns from demonstrated good behavior (critical in safety-sensitive domains).</p>
+</li>
+</ul>
+<p>However, purely copying the expert also comes with important limitations.</p>
+<h3 id="covariate-shift-and-compounding-errors">Covariate Shift and Compounding Errors<a class="headerlink" href="#covariate-shift-and-compounding-errors" title="Permanent link">¶</a></h3>
+<p>The main problem with behavioral cloning is that the training distribution of states can differ from the test distribution when the agent actually runs. During training, <span class="arithmatex">\(\pi_\theta\)</span> is only exposed to states that the expert visited. But once the agent is deployed, if it ever deviates even slightly from the expert’s trajectory, it may enter states not seen in the training data. In those unfamiliar states, the policy’s predictions may be unreliable, leading to errors that cause it to drift further from expert-like behavior.</p>
+<blockquote>
+<p>A small mistake can snowball: once the agent strays from what the expert would do, it encounters novel situations where its learned policy might be very poor. One error leads to another, and the agent can cascade into failure because it was never taught how to recover.</p>
+</blockquote>
+<p>This phenomenon is known as covariate shift or distributional shift. The learner is trained on the state distribution induced by the expert policy <span class="arithmatex">\(\pi_E\)</span>, but it is testing on the state distribution induced by its own policy <span class="arithmatex">\(\pi_\theta\)</span>. Unless <span class="arithmatex">\(\pi_\theta\)</span> is perfect, these distributions will diverge over time, and the divergence can grow unchecked. In other words, the agent might handle situations similar to the expert's trajectories well, but if it finds itself in a situation the expert never encountered (often a result of a prior mistake), it has no guidance on what to do and can rapidly veer off course. This is often illustrated by the example of a self-driving car learned by BC: if it slightly misjudges a turn and drifts, it may end up in a part of the road it never saw during training, leading to more errors (compounding until possibly a crash).</p>
+<p>Another limitation is that BC does not inherently guarantee optimality or improvement beyond the expert: the policy is only as good as the demonstration data. If the expert is suboptimal or the dataset doesn’t cover certain scenarios, the cloned policy will reflect those shortcomings and cannot improve by itself (since it has no feedback signal like reward to further refine its behavior). In reinforcement learning terms, BC has no notion of feedback for success or failure; it merely apes the expert, so it cannot discover better strategies or correct mistakes outside the expert's shadow.</p>
+<p>Researchers have developed strategies to mitigate the covariate shift problem. One approach is Dataset Aggregation (DAgger), which is an iterative algorithm: after training an initial policy via BC, let the policy interact with the environment and observe where it makes mistakes or visits unseen states; then have the expert provide the correct actions for those states, add these state-action pairs to the training set, and retrain the policy. By repeating this process, the policy’s training distribution is gradually brought closer to the distribution it will encounter when it controls the agent. DAgger can significantly reduce compounding errors, but it requires ongoing access to an expert for feedback during training.</p>
+<p>In summary, behavioral cloning is a powerful first step for imitation learning—it's straightforward and avoids many challenges of pure RL. But one must be mindful of its limitations: a blindly cloned policy can fail catastrophically when it encounters situations outside the expert’s experience. This motivates more sophisticated imitation learning methods that incorporate the dynamics of the environment and attempt to infer the intent behind expert actions, rather than just copying them. We turn to those next.</p>
+<h2 id="inverse-reinforcement-learning-learning-the-why">Inverse Reinforcement Learning: Learning the "Why"<a class="headerlink" href="#inverse-reinforcement-learning-learning-the-why" title="Permanent link">¶</a></h2>
+<p>Behavioral cloning directly learns what to do (mapping states to actions) but does not capture why those actions are desirable. Inverse Reinforcement Learning (IRL) instead asks: Given expert behavior, what underlying reward function <span class="arithmatex">\(R\)</span> could explain it? In other words, IRL attempts to reverse-engineer the expert's objectives from its observed behavior.</p>
+<p>In IRL, we assume that the expert <span class="arithmatex">\(\pi_E\)</span> is (approximately) optimal for some unknown reward function <span class="arithmatex">\(R^*\)</span>. The goal is to infer a reward function <span class="arithmatex">\(\hat{R}\)</span> such that, if an agent were to optimize <span class="arithmatex">\(\hat{R}\)</span>, it would reproduce the expert’s behavior. Formally, we want <span class="arithmatex">\(\pi_E\)</span> to be the optimal policy under the learned reward:</p>
+<div class="arithmatex">\[\pi_E = \arg\max_{\pi} \, V_R^{\pi}\]</div>
+<p>where <span class="arithmatex">\(V^{\pi}_{\hat{R}}\)</span> is the expected return of policy <span class="arithmatex">\(\pi\)</span> under the reward function <span class="arithmatex">\(\hat{R}\)</span>. In words, the expert should have higher cumulative reward (according to <span class="arithmatex">\(\hat{R}\)</span>) than any other policy. If we can find such an <span class="arithmatex">\(\hat{R}\)</span>, we have explained the expert’s behavior in terms of incentives.</p>
+<blockquote>
+<p>Intuition: IRL flips the reinforcement learning problem on its head. Rather than starting with a reward and finding a policy, we start with a policy (the expert's) and try to find a reward that this policy optimizes. It's like observing an expert driver and deducing that they must be implicitly trading off goals like "reach the destination quickly" and "avoid collisions" because their driving balances speed and safety.</p>
+</blockquote>
+<p>One challenge is that IRL is inherently an under-defined (ill-posed) problem: many possible reward functions might make <span class="arithmatex">\(\pi_E\)</span> appear optimal. To resolve this ambiguity, IRL algorithms introduce additional criteria or regularization. For example, they might prefer the simplest reward function that explains the behavior, or in the case of maximum entropy IRL, prefer a reward that leads to the most random (maximally entropic) policy among those that match the expert's behavior – this avoids overly narrow explanations and spreads probability over possible behaviors unless forced by data.</p>
+<p>Once a candidate reward function <span class="arithmatex">\(\hat{R}(s,a)\)</span> is learned through IRL, the process typically continues as follows: we plug <span class="arithmatex">\(\hat{R}\)</span> back into the environment and solve a forward RL problem (using any suitable algorithm from earlier chapters) to obtain a policy <span class="arithmatex">\(\pi_{\hat{R}}\)</span> that maximizes this recovered reward. Ideally, <span class="arithmatex">\(\pi_{\hat{R}}\)</span> will then behave similarly to the expert's policy <span class="arithmatex">\(\pi_E\)</span> (since <span class="arithmatex">\(\hat{R}\)</span> was chosen to explain <span class="arithmatex">\(\pi_E\)</span>). The end result is an agent that not only imitates the expert, but also has an explicit reward model of the task it is performing.</p>
+<p>IRL is usually more complex and computationally expensive than behavioral cloning, because it often involves a nested loop: for each candidate reward function, the algorithm may need to perform an inner optimization (solving an MDP) to evaluate how well that reward explains the expert. However, IRL provides several potential benefits:</p>
+<ul>
+<li>
+<p>It yields a reward function, which is a portable definition of the task. This inferred reward can then be reused: for example, to train new agents from scratch, to evaluate different policies, or to modify the task (by tweaking the reward) in a principled way.</p>
+</li>
+<li>
+<p>It can generalize better to new situations. If the environment changes in dynamics or constraints, having <span class="arithmatex">\(\hat{R}\)</span> allows us to re-optimize and find a new optimal policy for the new conditions. A policy learned by pure BC might not adapt well beyond the situations it was shown, whereas a reward captures the goal and can be re-optimized.</p>
+</li>
+<li>
+<p>It may allow the agent to exceed the demonstrator’s performance. Since IRL ultimately produces a reward function, an agent can continue to improve with further RL optimization. If the expert was suboptimal or noisy, a sufficiently good RL algorithm might find a policy that achieves an even higher reward (i.e. fine-tunes the behavior) while still aligning with the expert’s intent encoded in <span class="arithmatex">\(\hat{R}\)</span>.</p>
+</li>
+</ul>
+<p>In summary, IRL shifts the imitation learning problem from policy regression to reward inference. It answers a fundamentally different question: instead of directly cloning actions, infer the hidden goals that the expert is pursuing. With <span class="arithmatex">\(\hat{R}\)</span> in hand, we then fall back on standard RL techniques (like those from Chapters 4–8) to derive a policy. IRL is especially appealing in scenarios where we suspect the expert’s behavior is optimizing some elegant underlying objective, and we want to uncover that objective for reuse or interpretation. The cost of IRL is the added complexity of the learning process, but the payoff is a deeper understanding of the task and potentially greater robustness and optimality of the learned policy.</p>
+<h3 id="maximum-entropy-inverse-reinforcement-learning">Maximum Entropy Inverse Reinforcement Learning<a class="headerlink" href="#maximum-entropy-inverse-reinforcement-learning" title="Permanent link">¶</a></h3>
+<h3 id="principle-of-maximum-entropy">Principle of Maximum Entropy<a class="headerlink" href="#principle-of-maximum-entropy" title="Permanent link">¶</a></h3>
+<p>The entropy of a distribution <span class="arithmatex">\(p(s)\)</span> is defined as:</p>
+<div class="arithmatex">\[H(p) = -\sum_{s} p(s)\log p(s)\]</div>
+<p>The principle of maximum entropy states: The probability distribution that best represents our state of knowledge is the one with the largest entropy, given the constraints of precisely stated prior data. Consider all probability distributions consistent with the observed data. Select the one with maximum entropy—i.e., the least biased distribution that fits what we know while assuming nothing extra.</p>
+<h3 id="maximum-entropy-applied-to-irl">Maximum Entropy Applied to IRL<a class="headerlink" href="#maximum-entropy-applied-to-irl" title="Permanent link">¶</a></h3>
+<p>We seek a distribution over trajectories <span class="arithmatex">\(P(\tau)\)</span> that:</p>
+<ol>
+<li>Has maximum entropy, and</li>
+<li>Matches expert feature expectations.</li>
+</ol>
+<p>Formally, we maximize:</p>
+<div class="arithmatex">\[\max_{P} -\sum_{\tau} P(\tau)\log P(\tau)\]</div>
+<p>subject to:</p>
+<div class="arithmatex">\[\sum_{\tau} P(\tau)\mu(\tau) = \frac{1}{|D|}\sum_{\tau_i \in D} \mu(\tau_i)\]</div>
+<div class="arithmatex">\[\sum_{\tau} P(\tau) = 1\]</div>
+<p>Here:</p>
+<ul>
+<li><span class="arithmatex">\(\mu(\tau)\)</span> represents feature counts for trajectory <span class="arithmatex">\(\tau\)</span></li>
+<li><span class="arithmatex">\(D\)</span> is the expert demonstration set</li>
+</ul>
+<p>This says: among all possible distributions consistent with observed expert feature averages, choose the one with maximum uncertainty.</p>
+<h3 id="matching-rewards">Matching Rewards<a class="headerlink" href="#matching-rewards" title="Permanent link">¶</a></h3>
+<p>In linear reward IRL, we assume rewards take the form:</p>
+<div class="arithmatex">\[r_\phi(\tau) = \phi^\top \mu(\tau)\]</div>
+<p>We want a policy <span class="arithmatex">\(\pi\)</span> that induces a trajectory distribution <span class="arithmatex">\(P(\tau)\)</span> matching the expert’s expected reward under <span class="arithmatex">\(r_\phi\)</span>:</p>
+<div class="arithmatex">\[\max_{P(\tau)} -\sum_{\tau}P(\tau)\log P(\tau)\]</div>
+<p>subject to:</p>
+<div class="arithmatex">\[\sum_{\tau} P(\tau)r_\phi(\tau) = \sum_{\tau} \hat{P}(\tau)r_\phi(\tau)\]</div>
+<div class="arithmatex">\[\sum_{\tau}P(\tau)=1\]</div>
+<p>This aligns the learner’s expected reward with the expert’s reward estimate.</p>
+<h3 id="maximum-entropy-exponential-family-distributions">Maximum Entropy ⇒ Exponential Family Distributions<a class="headerlink" href="#maximum-entropy-exponential-family-distributions" title="Permanent link">¶</a></h3>
+<p>Using constrained optimization (Lagrangians), we obtain:</p>
+<div class="arithmatex">\[\log P(\tau) = \lambda_1 r_\phi(\tau) - 1 - \lambda_0\]</div>
+<p>Thus:</p>
+<div class="arithmatex">\[P(\tau) \propto \exp(r_\phi(\tau))\]</div>
+<p>This reveals a key result: The maximum entropy distribution consistent with constraints belongs to the exponential family.</p>
+<p>That is,</p>
+<div class="arithmatex">\[p(\tau|\phi) = \frac{1}{Z(\phi)}\exp(r_\phi(\tau))\]</div>
+<p>where</p>
+<div class="arithmatex">\[Z(\phi)=\sum_{\tau}\exp(r_\phi(\tau))\]</div>
+<p>This means we can now learn <span class="arithmatex">\(\phi\)</span> by maximizing likelihood of observed expert data, because the trajectory distribution becomes a normalized exponential model.</p>
+<h3 id="maximum-entropy-over-tau-equals-maximum-likelihood-of-observed-data-under-max-entropy-exponential-family-distribution">Maximum Entropy Over <span class="arithmatex">\(\tau\)</span> Equals Maximum Likelihood of Observed Data Under Max Entropy (Exponential Family) Distribution<a class="headerlink" href="#maximum-entropy-over-tau-equals-maximum-likelihood-of-observed-data-under-max-entropy-exponential-family-distribution" title="Permanent link">¶</a></h3>
+<p>Jaynes (1957) showed:
+Maximizing entropy over trajectories = maximizing likelihood of data under the maximum-entropy distribution.</p>
+<p>So we:</p>
+<ol>
+<li>Assume <span class="arithmatex">\(p(\tau|\phi)\)</span> has exponential form</li>
+<li>Learn <span class="arithmatex">\(\phi\)</span> by maximizing:</li>
+</ol>
+<div class="arithmatex">\[\max_{\phi} \prod_{\tau \in D} p(\tau|\phi)\]</div>
+<p>This allows IRL to treat expert demonstrations as data to be probabilistically explained.</p>
+<h2 id="maximum-entropy-inverse-rl-algorithm">Maximum Entropy Inverse RL Algorithm<a class="headerlink" href="#maximum-entropy-inverse-rl-algorithm" title="Permanent link">¶</a></h2>
+<p>Assuming known dynamics and linear rewards:</p>
+<ol>
+<li>Input: expert demonstrations <span class="arithmatex">\(\mathcal{D}\)</span></li>
+<li>Initialize reward weights <span class="arithmatex">\(r_\phi\)</span></li>
+<li>Compute optimal policy <span class="arithmatex">\(\pi(a|s)\)</span> given <span class="arithmatex">\(r_\phi\)</span> (via dynamic programming / value iteration)</li>
+<li>Compute state visitation frequencies <span class="arithmatex">\(\rho(s|\phi,T)\)</span></li>
+<li>
+<p>Compute gradient on reward parameters:</p>
+<p><span class="arithmatex">\(\nabla J(\phi) = \frac{1}{N}\sum_{\tau_i \in \mathcal{D}} \mu(\tau_i) - \sum_{s}\rho(s|\phi,T)\mu(s)\)</span></p>
+</li>
+<li>
+<p>Update <span class="arithmatex">\(\phi\)</span> via gradient step</p>
+</li>
+<li>Repeat from Step 3</li>
+</ol>
+<blockquote>
+<p>Maximum Entropy IRL assumes experts act stochastically but optimally.
+Instead of selecting a single best policy, it finds a distribution over trajectories consistent with expert behavior.
+The resulting trajectory probabilities follow:
+<span class="arithmatex">\(<span class="arithmatex">\(P(\tau) \propto \exp(r_\phi(\tau))\)</span>\)</span></p>
+<p>Learning becomes maximum likelihood estimation: find reward parameters <span class="arithmatex">\(\phi\)</span> that best explain expert demonstrations.</p>
+</blockquote>
+<h2 id="apprenticeship-learning">Apprenticeship Learning<a class="headerlink" href="#apprenticeship-learning" title="Permanent link">¶</a></h2>
+<p>Apprenticeship Learning usually refers to the scenario where an agent learns to perform a task by iteratively improving its policy using expert demonstrations as a reference. In many contexts, this term is used when an IRL algorithm is combined with policy learning: the agent behaves as an apprentice to the expert, gradually mastering the task. The classic formulation by Abbeel and Ng (2004) introduced apprenticeship learning via IRL, which guarantees that the learner’s policy will perform nearly as well as the expert’s, given enough demonstration data.</p>
+<p>One way to think of apprenticeship learning is as follows: rather than directly cloning actions, we try to match the feature expectations of the expert. Suppose we have some features <span class="arithmatex">\(\phi(s)\)</span> of states (or state-action pairs) that capture what we care about in the task (for example, in driving, features might include lane deviation, speed, collision count, etc.). The expert will have some expected cumulative feature values <script type="math/tex"> \mathbb{E}_{\pi_E}\left[\sum_t \phi(s_t)\right] </script>. Apprenticeship learning methods aim for the learner to achieve similar feature expectations.</p>
+<p>A prototypical apprenticeship learning algorithm proceeds like this:</p>
+<ol>
+<li>
+<p>Initialize a candidate policy (it could even start random).</p>
+</li>
+<li>
+<p>Evaluate how this policy behaves in terms of features (run it in simulation to estimate <span class="arithmatex">\(\mathbb{E}_{\pi}\left[\sum_t \phi(s_t)\right]\)</span>).</p>
+</li>
+<li>
+<p>Compare the policy’s behavior to the expert’s behavior. Identify the biggest discrepancy in feature expectations.</p>
+</li>
+<li>
+<p>Adjust the reward (implicitly defined as a weighted sum of features) to penalize the discrepancy. In other words, find reward weights <span class="arithmatex">\(w\)</span> such that the expert’s advantage over the apprentice in those feature dimensions is highlighted.</p>
+</li>
+<li>
+<p>Optimize a new policy for this updated reward function (solve the MDP with the new <span class="arithmatex">\(w\)</span> to get <span class="arithmatex">\(\pi_{\text{new}}\)</span> that maximizes <span class="arithmatex">\(w \cdot \phi\)</span>).</p>
+</li>
+<li>
+<p>Set this <span class="arithmatex">\(\pi_{\text{new}}\)</span> as the apprentice’s policy and repeat the evaluation -&gt; comparison -&gt; reward adjustment cycle.</p>
+</li>
+</ol>
+<p>Each iteration pushes the apprentice to close the gap on the feature that most distinguishes it from the expert. After a few iterations, this process yields a policy that matches the expert on all key feature dimensions within some tolerance. At that point, the apprentice is essentially as good as the expert with respect to any reward expressible as a combination of those features.</p>
+<p>The term apprenticeship learning highlights that the agent is not just mimicking blindly but is engaged in a process of improvement guided by the expert’s example. Importantly, the focus is on achieving at least the expert’s level of performance. We don’t necessarily care about identifying the exact reward the expert had; we care that our apprentice’s policy is successful. In fact, in the algorithm above, the reward weights <span class="arithmatex">\(w\)</span> found in each iteration are intermediate tools – at the end, one can take the final policy and deploy it, without needing to stick to a single explicit reward interpretation.</p>
+<p>In relation to IRL, apprenticeship learning can be seen as a practical approach to use IRL for control: IRL finds a reward that explains the expert, and then the agent learns a policy for that reward; if it’s not yet good enough, adjust and repeat. Modern developments in imitation learning often follow this spirit. For example, Generative Adversarial Imitation Learning (GAIL) is a more recent technique where the agent learns a policy by trying to fool a discriminator into thinking the agent’s trajectories are from the expert – conceptually, the discriminator’s judgment provides a sort of reward signal telling the agent how "expert-like" its behavior is. This can be viewed as a form of apprenticeship learning, since the agent is iteratively tweaking its policy to become indistinguishable from the expert.</p>
+<p>In summary, apprenticeship learning is about learning by iteratively comparing to an expert and closing the gap. It often uses IRL under the hood, but its end goal is the policy (the apprentice’s skill), not necessarily the reward. It underscores a key point: in imitation learning, sometimes we care more about performing as well as the expert (a direct goal), and sometimes we care about understanding the expert’s intentions (the indirect goal via IRL). Apprenticeship learning emphasizes the former.</p>
+<h2 id="imitation-learning-in-the-rl-landscape">Imitation Learning in the RL Landscape<a class="headerlink" href="#imitation-learning-in-the-rl-landscape" title="Permanent link">¶</a></h2>
+<p>Imitation learning fills an important niche in the overall reinforcement learning framework. It is especially useful when:</p>
+<ol>
+<li>
+<p>Rewards are difficult to specify: If it's unclear how to craft a reward that captures all aspects of the desired behavior, providing demonstrations can bypass this. IL shines in complex tasks (e.g. high-level driving maneuvers, dexterous robot manipulation) where manually writing a reward function would be cumbersome or prone to error.</p>
+</li>
+<li>
+<p>Rewards are sparse or delayed: When reward feedback is very rare or only given at the end of an episode, a pure RL agent might struggle to get enough signal to learn. An expert trajectory provides dense guidance at every time step (state-action pairs), effectively providing a shaped signal through imitation. This can jump-start learning in tasks that are otherwise too sparse for RL to crack (Chapter 4 discussed how sparse rewards make value estimation difficult – IL sidesteps that by using expert knowledge).</p>
+</li>
+<li>
+<p>Exploration is risky or expensive: In real-world environments like robotics, autonomous driving, or healthcare, exploring with random or untrained policies can be dangerous or costly. IL allows learning a policy without the agent ever taking unguided actions in the real environment; it learns from safe, successful behaviors demonstrated by the expert. This makes it an attractive approach when safety is a hard constraint.</p>
+</li>
+</ol>
+<p>It’s important to note that IL is not necessarily a replacement for reward-based RL, but rather a complement to it. A common practical approach is to bootstrap an agent with imitation learning and then fine-tune it with reinforcement learning. For example, one might first use behavioral cloning to teach a robot arm the basics of a task from human demonstrations, getting it into a reasonable regime of behavior; then, if a reward function is available (even a sparse one for success), use RL to further improve the policy, possibly surpassing the human expert's performance or adapting to slight changes in the task. The initial IL phase provides a good policy prior (saving time and avoiding dangerous exploration), and the subsequent RL phase lets the agent optimize and explore around that policy to refine skills.</p>
+<p>On the flip side, imitation learning does require expert data. If obtaining demonstrations is hard (or if no expert exists for a brand-new task), IL might not be applicable. Moreover, if the expert demonstrations are of varying quality or contain noise, the agent will faithfully learn those imperfections unless additional measures (like filtering data or combining with RL optimization) are taken. In contrast, a pure RL approach, given a well-defined reward and enough exploration, can in principle discover superior strategies that no demonstrator provided. Thus, in practice, there is a trade-off: IL can dramatically speed up learning and improve safety given an expert, whereas RL remains the go-to when we only have a reward signal and the freedom to explore.</p>
+<p>Imitation learning has become a critical part of the toolbox for solving real-world sequential decision problems. It enables success in domains that might be intractable for pure reinforcement learning by providing an external source of guidance. By learning directly from expert behavior – through methods like behavioral cloning (learning the policy directly) or inverse reinforcement learning (learning the underlying reward and then the policy) – an agent can shortcut the trial-and-error process. Of course, IL introduces its own challenges (distribution shift, reliance on demonstration coverage, potential suboptimality of the expert), but these can often be managed with algorithmic innovations (DAgger, combining IL with RL, etc.). In summary, imitation learning serves as a powerful paradigm for training agents in cases where designing rewards or allowing extensive exploration is impractical, and it often works hand-in-hand with traditional RL to achieve the best results in complex environments.</p>
+<h3 id="mental-map">Mental map<a class="headerlink" href="#mental-map" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code>                    Imitation Learning (IL)
+      Goal: Learn behavior from expert demonstrations
+                     instead of explicit rewards
+                                │
+                                ▼
+             Why Imitation Learning? (Motivation)
+ ┌───────────────────────────────────────────────────────────┐
+ │ Hard to design rewards → reward hacking, tuning           │
+ │ Sparse rewards → inefficient trial &amp; error                │
+ │ Unsafe exploration (robots, driving, healthcare)          │
+ │ Expert data available → demonstrations as guidance        │
+ └───────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+                   IL vs Reward-Based RL
+ ┌─────────────────────────────┬──────────────────────────────┐
+ │ Reward-Based RL             │ Imitation Learning           │
+ │ + Explores actively         │ + Learns from expert         │
+ │ + Needs reward design       │ + No explicit reward         │
+ │ – Unsafe / inefficient      │ – Depends on demo quality   │
+ └─────────────────────────────┴──────────────────────────────┘
+                                │
+                                ▼
+                         IL Problem Setup
+ ┌───────────────────────────────────────────────────────────┐
+ │ MDP without reward function                                │
+ │ Access to expert trajectories τE (s,a pairs)               │
+ │ Goal → Learn policy π that mimics πE                       │
+ └───────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+                 Core Method 1: Behavioral Cloning (BC)
+ ┌───────────────────────────────────────────────────────────┐
+ │ Treat imitation as supervised learning                    │
+ │ Train πθ(s) → aE using dataset D                          │
+ │ Discrete: cross-entropy loss                              │
+ │ Continuous: mean squared error                            │
+ │ Advantages: simple, offline, safe                         │
+ └───────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+           Key BC Problem: Covariate / Distribution Shift
+ ┌───────────────────────────────────────────────────────────┐
+ │ Trained only on expert states                             │
+ │ When deployed, policy errors lead to unseen states        │
+ │ → Poor decisions → more drift → compounding failure       │
+ │ BC cannot recover or improve beyond expert                │
+ └───────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+                    Fixing BC: DAgger (Idea)
+ ┌───────────────────────────────────────────────────────────┐
+ │ Let policy act, collect mistakes                          │
+ │ Ask expert for correct action                             │
+ │ Add to dataset and retrain                                │
+ │ → brings training data closer to deployment distribution  │
+ └───────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+       Core Method 2: Inverse Reinforcement Learning (IRL)
+ ┌───────────────────────────────────────────────────────────┐
+ │ Learn the “why” behind actions → infer hidden reward R*   │
+ │ Expert assumed optimal                                     │
+ │ Solve inverse problem: πE ≈ optimal for R*                 │
+ │ After reward recovered → run normal RL to learn policy     │
+ │ Benefits: generalization, interpretability, improve expert │
+ └───────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+                Core Method 3: Apprenticeship Learning
+ ┌───────────────────────────────────────────────────────────┐
+ │ Iteratively improve policy via comparing to expert        │
+ │ Match feature expectations φ(s)                           │
+ │ Reweights reward → optimize → evaluate → repeat           │
+ │ Goal: perform at least as well as expert                  │
+ │ Often implemented via IRL (e.g., GAIL conceptually)       │
+ └───────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+           Role of IL within broader RL landscape
+ ┌───────────────────────────────────────────────────────────┐
+ │ When IL is useful:                                        │
+ │ - Reward hard to design                                   │
+ │ - Unsafe or costly to explore                             │
+ │ - Sparse reward tasks                                     │
+ │ IL + RL hybrid: BC warm-start → RL fine-tune beyond expert│
+ │ Limitations: need expert, demos may be suboptimal         │
+ └───────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+                   Final Takeaway (Chapter Summary)
+ ┌───────────────────────────────────────────────────────────┐
+ │ IL bypasses reward engineering &amp; risky exploration         │
+ │ BC learns “what,” IRL learns “why,” apprenticeship learns  │
+ │ “how to get as good as expert.”                           │
+ │ IL often combined with RL for best performance.           │
+ └───────────────────────────────────────────────────────────┘
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../7_gae/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 7. Advances in Policy Optimization – GAE, TRPO, and PPO">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                7. Advances in Policy Optimization – GAE, TRPO, and PPO
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../9_rlhf/" class="md-footer__link md-footer__link--next" aria-label="Next: 9. RLHF">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                9. RLHF
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      © 2025 Salman Khan — Educational Use Only
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/SalK91/reinforcement_learning" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.indexes", "navigation.path", "navigation.top", "navigation.footer", "toc.follow", "content.code.copy", "content.action.edit", "content.action.view", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="../../js/print-site.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>
