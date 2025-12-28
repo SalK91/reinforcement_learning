@@ -36,10 +36,7 @@ To learn optimal behavior, the agent must balance two goals:
 1. Exploitation: choose actions believed to yield high rewards.
 2. Exploration: try actions whose consequences are uncertain or poorly understood.
 
-A common solution is the $\epsilon$-greedy policy:
-
-With probability $1 - \epsilon$, choose the action with the highest estimated value.  
-With probability $\epsilon$, choose a random action.
+A common solution is the $\epsilon$-greedy policy: With probability $1 - \epsilon$, choose the action with the highest estimated value. With probability $\epsilon$, choose a random action.
 
 Formally:
 

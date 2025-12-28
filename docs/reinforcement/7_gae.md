@@ -55,6 +55,24 @@ In modern actor–critic algorithms (including TRPO and PPO), GAE is used to com
 
 The result of GAE is a much smoother, lower-variance advantage signal for the actor, without introducing too much bias. Empirically, this greatly stabilizes training: the policy doesn’t overreact to single high-return episodes, and it doesn’t ignore long-term outcomes either. GAE essentially bridges the gap between the high-variance Monte Carlo world of Chapter 5 and the low-variance TD world of Chapter 3–4, and it has become a standard component in virtually all modern policy optimization algorithms.
 
+## Offline Actor-Critic
+Online Actor-Critic algorithms are powerful but fundamentally constrained by their interaction loop. Each policy update is tied to newly collected experience, so the actor typically takes only one (or very few) gradient steps per environment step to maintain stability. Moreover, the policy must remain a small, local perturbation of the behavior policy that generated the data, because the critic is only reliable on recently sampled on-policy actions. This makes online Actor-Critic methods data-hungry, slow to train, and sometimes unsafe or impractical in domains where real-world exploration is costly, risky, or unethical.
+
+Offline Actor-Critic removes this dependency on environment interaction by training from a fixed logged dataset collected beforehand. This shift enables learning in safety-critical or high-cost settings—such as healthcare, robotics, finance, and recommender systems, where online exploration is infeasible.
+
+Because the dataset is static, the actor and critic can perform many gradient updates on the same batch, enabling multiple optimization steps per data sample. This breaks the conservative update regime required online and dramatically improves sample efficiency, since learning no longer requires fresh environment data after every gradient step.
+
+![alt text](images/offpolicy_actorcritic.png)
+
+*Figure : Off-Policy Actor-Critic Method: [CS 224 - Stanford](https://cs224r.stanford.edu/slides/05_cs224r_offpolicy_actor_critic_2025.pdf)*
+
+The actor optimizes a differentiable surrogate objective, commonly constructed using importance weights and an advantage estimate produced by the critic (value-based or Q-based). Under the dataset’s state–action distribution, this objective approximates policy improvement, while the critic provides a stabilizing learning signal.
+
+Yet, this very advantage introduces the key challenge: aggressive repeated gradient steps push the actor far outside the behavior policy’s support. The critic is then forced to evaluate out-of-distribution actions, causing extrapolation error in value/Q estimates and generating inflated or spurious advantages. The actor can overfit to these optimistic but invalid gradients, producing a fragile policy that performs well on logged data but fails when deployed.
+
+To counter this, modern offline Actor-Critic methods incorporate behavior-policy regularization, conservative critics, or explicit distribution constraints. Despite these advances, the core issue remains: policy improvement must not depend on value estimates for actions the dataset never observed.
+
+
 ## KL Divergence Constraints and Surrogate Objectives
 We now turn to the question of stable policy updates. As discussed, a major issue with vanilla policy gradient is that a single update can accidentally push the policy into a disastrous region (because the gradient is computed at the current policy but we might step too far). To make updates safer, we want to constrain how much the policy changes at each step. A natural way to measure change between the old policy $\pi_{\text{old}}$ and a new policy $\pi_{\text{new}}$ is to use the Kullback–Leibler (KL) divergence. For example, we can require:
 
@@ -230,6 +248,9 @@ $$
 In practice, PPO with clipping has become one of the most widely used RL algorithms because it strikes a good balance between performance and simplicity. It is relatively easy to implement (compared to TRPO) and has been found to be robust across many tasks and hyperparameters. While it doesn’t guarantee monotonic improvement in theory, in practice it achieves stable training behavior very similar to TRPO.
 
 In modern practice, PPO is the dominant choice for policy optimization in deep RL, due to its relative simplicity and strong performance across many environments. TRPO is still important conceptually (and sometimes used in scenarios where theoretical guarantees are desired), but PPO’s convenience usually wins out.
+
+
+
 
 ## Putting It Together: Sample Efficiency, Stability, and Monotonic Improvement
 

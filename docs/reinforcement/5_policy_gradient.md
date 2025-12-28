@@ -26,8 +26,8 @@ That is, learn policy parameters θ that maximize expected return.
 
 | Approach | What is Learned? | Policy Type | Works in Continuous Actions? |
 |----------|------------------|-------------|-------------------------------|
-| Value-Based | $V(s)$ or $Q(s,a)$ | Indirect (ε-greedy, greedy) | No |
-| Policy-Based | $\pi_\theta(a/s)$ | Direct, stochastic | Yes |
+| Value-Based (Critic Only) | $V(s)$ or $Q(s,a)$ | Indirect (ε-greedy, greedy) | No |
+| Policy-Based (Actor Only) | $\pi_\theta(a/s)$ | Direct, stochastic | Yes |
 | Actor-Critic | Both | Direct & learned | Yes |
 
 

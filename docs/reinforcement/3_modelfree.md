@@ -1,6 +1,6 @@
 # Chapter 3: Model-Free Policy Evaluation: Learning the Value of a Fixed Policy
 
-In Dynamic Programming, value functions are computed using a known model of the environment. In reality, however, the model is almost always unknown. This necessitates a shift to Model-Free Reinforcement Learning, where the agent must learn the values of states and actions solely from direct experience (i.e., collecting trajectories of states, actions, and rewards). The goal is to estimate the value function $V^\pi(s)$ or $Q^\pi(s,a)$ for a given policy $\pi$ using data of the form:
+In Dynamic Programming, value functions are computed using a known model of the environment. In reality, however, the model is almost always unknown. This necessitates Model-Free Reinforcement Learning, where the agent must learn the values of states and actions solely from direct experience (i.e., collecting trajectories of states, actions, and rewards). The goal is to estimate the value function $V^\pi(s)$ or $Q^\pi(s,a)$ for a given policy $\pi$ using data of the form:
 
 $$
 s_0, a_0, r_1, s_1, a_1, r_2, s_2, \dots
@@ -185,11 +185,11 @@ TD methods generally have a desirable trade-off, accepting a small bias in excha
 >
 > ### B. Final Estimates ($V_{TD(0)}$)
 >
-> > $$
-> > V(s_A) = \mathbf{0.375} \\
-> > V(s_B) = \mathbf{4.431} \\
-> > V(s_C) = \mathbf{3.663}
-> > $$
+>  $$
+>  V(s_A) = \mathbf{0.375} \\
+>  V(s_B) = \mathbf{4.431} \\
+>  V(s_C) = \mathbf{3.663}
+>  $$
 >
 >
 > ## Comparison of Results
@@ -201,6 +201,7 @@ TD methods generally have a desirable trade-off, accepting a small bias in excha
 > | $s_C$ | 3.567 | 3.567 | 3.663 | All methods are close for $s_C$. |
 >
 > This comparison illustrates the bias-variance trade-off:
+>
 > * MC uses the sample return ($G_t$), which has high variance but is an unbiased target (First-Visit).
 > * TD uses a bootstrapped estimate ($r + \gamma V(s')$), which has lower variance but introduces bias by relying on an estimated successor value.
 
